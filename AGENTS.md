@@ -21,7 +21,7 @@ This project is **in the design / pre-implementation phase**. The initial implem
 
 - Standard map: **9×9**, orthogonal connection graph. Player Injection Points at the four edge midpoints; hostile station Injection Point at center. Only Processes occupy cells; maximum one Process per cell and one Module per location.
 - **End-of-owner-turn** occupation captures territory; ownership persists after departure. Capture a player's Injection Point to eliminate them; the hostile center cannot be captured normally.
-- **Station phase (LOCKED v3.0):** after every surviving player has taken a turn, the hostile station faction acts in its own once-per-round phase, then the round ends. All hostile deployed forces belong to the station; the station does not occupy a position in randomized player order. How many enemy forces can act within that phase remains **OPEN**.
+- **Station phase (LOCKED v3.0):** after every surviving player has taken a turn, the hostile station faction acts in its own once-per-round phase, then the round ends. All hostile deployed forces belong to the station; the station does not occupy a position in randomized player order. **Every deployed hostile Process receives one activation per Station phase (LOCKED v3.1)**. The station escalates irreversibly through provisional force-size tiers **3 → 5 → 6+** when players advance toward its center. The exact trigger metric is **OPEN**: distance-to-center 6 is crossed before distance-to-center 3, so do not silently implement thresholds as radial distances.
 - 30 cards/deck; max 3 copies of a card; 1 Operator outside deck. Start 4 cards; at each round start optionally discard any number and draw **up to 4**, no hand limit. Draw pile reshuffles from Discard when exhausted; Graveyard stays separate.
 - Round-start income **1 per owned cell, max 5 *income per round***, stored resources uncapped. Standard starting bank 2; initial owned Injection Point yields 1 on round 1.
 - Each player activates **one** Process per turn. Slow/Normal/Fast all Move at most one edge; Slow cannot Move on deployment round or after moving previous round, Normal cannot Move on deployment round, Fast can.
@@ -51,7 +51,7 @@ Do not implement a speculative networking layer or large content system before t
 Write tests at the rule layer. Cover at minimum:
 
 1. **Board setup:** 9×9, four edge Injection Points and one center enemy objective; links orthogonal by default; occupancy max one.
-2. **Turn phases:** round-start discard/draw/income order; player turns in fixed randomized order; exactly four optional action slots in fixed sequence; at most one player Process activates; **one station phase after all player turns** (not an extra ordinary player turn).
+2. **Turn phases:** round-start discard/draw/income order; player turns in fixed randomized order; exactly four optional action slots in fixed sequence; at most one player Process activates; **one station phase after all player turns** with one activation for **each deployed hostile Process** (not an extra ordinary player turn). Escalation tiers only rise; store the highest attained tier.
 3. **Economy:** income cap applies to *income*, not storage. Resources bank across turns; 2 initial + 1 first-round income. No income from locations captured later that round.
 4. **Spawn/ownership:** deployment only at empty owned spawns, end-turn capture, location ownership persists without occupant, Modules destroyed on capture, player elimination effects.
 5. **Movement:** each type's deployment-round eligibility, Slow previous-round cooldown including blocked melee moves, exactly one graph edge of movement.
@@ -59,7 +59,8 @@ Write tests at the rule layer. Cover at minimum:
 7. **Zones:** hand-discarded Process → Discard; destroyed board Process → Graveyard; Update → Discard; replacement cleanup; reshuffle excludes Graveyard.
 8. **Commands:** any-turn play, LIFO nested responses, paid-before-resolution, canceled Commands to Discard, global default targeting with card exceptions.
 9. **Operator abilities:** passive effects disabled upon elimination, once-per-round activated usage, not consuming fixed actions; **owner-turn-only is confirmed; reject off-turn Operator activations**.
-10. **Scoring:** boss damage accumulated per player throughout match; only surviving top contributor receives provisional +50; territory points at end of player's turn.
+10. **Station escalation:** each deployed hostile Process activates once during the Station phase; escalating tier never decreases after Process retreat/death. Test thresholds once their distance/progression definition is approved.
+11. **Scoring:** boss damage accumulated per player throughout match; only surviving top contributor receives provisional +50; territory points at end of player's turn.
 
 Add regression tests before fixing a bug. For every new mechanic, test both an ordinary case and at least one counterexample.
 
@@ -81,7 +82,7 @@ Use concise, legible Markdown and specific examples. Prefer stable terminology (
 3. Process deployment, activation, movement, melee, shooting and destruction.
 4. Fixed action slots, Updates and Modules, then Commands and stack/priority.
 5. Operator passive/activated effects with owner-turn-only activated timing.
-6. Station-faction action policy, deployed forces, central objective and scoring once unresolved detailed rules are agreed.
+6. Station-faction action policy, escalation triggers and force-size/spawning rules, central objective and scoring once unresolved detailed rules are agreed.
 7. Playable single-player UI and AI opponents using the same rules interface; future multiplayer.
 
 These are suggested implementation milestones, **not permission to decide open gameplay rules**.
