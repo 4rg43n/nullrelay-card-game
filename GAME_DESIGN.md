@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.4 · 2026-11-02  
+> **Design baseline:** v3.5 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -129,7 +129,7 @@ After the actions: capture the locations occupied by the active player's Process
 
 **LOCKED (v3.4):** The station is a **card-playing adversary**, using its **own deck, hand, resource bank, Processes, Commands, Updates, Modules, Discard and Graveyard** under the same underlying game rules as the player factions, except for explicitly agreed station-specific mechanics. Its deployed force emerges from legal card plays, rather than automatic escalation spawning.
 
-**RULE INTERACTION TO RESOLVE:** The earlier station-specific rule gives **every deployed hostile Process one activation each Station phase**. The new 'same rules as players' intent would ordinarily mean **one Process activation** per turn. Preserve this prior exception for now, but explicitly seek a decision before implementing its activation economy; do not silently erase or generalize it.
+**LOCKED (v3.5) — station activation exception:** **Every deployed hostile Process may activate once during each Station phase.** This is an explicit exception to the player rule limiting a player to one activated Process per turn. Each hostile Process still performs only **one legal activation action** (Move, Shoot, ability or Pass), subject to its movement restrictions, costs and card text. The station uses the same card legality, costs and board rules as players otherwise. A station Process not deployed on the board cannot activate. The exact order in which hostile Processes activate remains an AI/priority implementation detail to define.
 
 **LOCKED (v3.4):** Escalation increases the station's **draw-to hand-size target**, not its automatically deployed Process count. The station begins at **4**, increases to **5** at the first board threshold, **6** at the second, and has an intended later target of **7** at a **not-yet-defined third escalation trigger**. With the currently approved two dotted zones, the standard board supports 4 → 5 → 6; **do not invent a third dotted boundary** for 7.
 
@@ -147,7 +147,7 @@ At its regular round-start draw step, the station draws **up to its current targ
 
 Thus the boundaries are **2** and **3** squares inward from the closest outer board edge, respectively. The approved 5×5 / 3×3 diagram is authoritative for zone geometry; **a boundary cell counts as inside**. Escalation is global and monotonic: entering the inner zone implies both thresholds have been attained; retreat, death or changes in ownership never lower an attained tier. For nonstandard boards, use explicitly configured equivalent escalation regions rather than hardcoding 9×9 coordinates.
 
-**OPEN:** location/timing of a third escalation to hand-size **7**; station round-start discard/draw/income timing relative to the player round-start procedure; detailed card-driven deployment and AI behavior; when in the movement/Command resolution sequence to evaluate zone entry; and whether every hostile Process activates in a Station phase (the prior station exception) or station follows the one-activation player rule.
+**OPEN:** location/timing of a third escalation to hand-size **7**; station round-start discard/draw/income timing relative to the player round-start procedure; detailed card-driven deployment and AI behavior; when in the movement/Command resolution sequence to evaluate zone entry; and the detailed sequencing of the individual hostile Process activations.
 
 **Important:** 'play Updates/Modules during your own turn' does **not** imply unlimited plays or free timing in violation of the ordered actions. Their owner-turn permission and their once-per-turn fixed action slots both apply. Commands can be played between those steps and as responses without altering the fixed order.
 
@@ -155,7 +155,7 @@ Thus the boundaries are **2** and **3** squares inward from the closest outer bo
 
 ## 8. Process activation, movement and combat — LOCKED
 
-Only **one Process per player per round** is activated via that player's Activate action, regardless of board army size. The same Process may activate in consecutive rounds; there is no requirement to rotate units. Passive and triggered abilities do not require activation unless a card states otherwise.
+Only **one Process per player per round** is activated via that player's Activate action, regardless of board army size. **Exception:** during the Station phase, **each deployed hostile Process may activate once** (v3.5). The same Process may activate in consecutive rounds; there is no requirement to rotate units. Passive and triggered abilities do not require activation unless a card states otherwise.
 
 ### Movement types
 
@@ -204,7 +204,7 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 ## 11. Design decisions still open
 
 Do **not** convert these to rules without explicit design agreement:
-1. Station behavior: health, Process AI, card/resource-driven deployment, third hand-size-7 escalation trigger, exact round-start timing, conflict between all-hostiles-activate and player one-activation rule, escalation trigger timing, attack logic, damage effects and precise destruction sequence.
+1. Station behavior: health, Process AI, card/resource-driven deployment, third hand-size-7 escalation trigger, exact round-start timing, order and sequencing of station Process activations, escalation trigger timing, attack logic, damage effects and precise destruction sequence.
 2. Boss contribution and scoring tie-breaks; interaction with eliminated contributors and overkill.
 3. Exact multiplayer priority/Command stack response windows and trigger ordering.
 4. Line of sight and range on boards with removed/added connections.
