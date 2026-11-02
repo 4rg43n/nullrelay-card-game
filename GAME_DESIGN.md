@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.6 · 2026-11-02  
+> **Design baseline:** v3.7 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -60,11 +60,12 @@ The central hostile Injection Point **cannot be captured by ordinary location co
 
 - **Every Open location supports the station economically**, without being represented as an ordinary player-owned color or scoring as player territory. The station uses its own resource bank and pays for cards in the usual way.
 - **Station reclamation:** at the **end of each Station Phase**, each location occupied by a surviving station Process changes to **Open** if previously player-controlled. Remove any installed Module on a location whose control changes, sending it to its owner's Discard. This is analogous to end-turn player captures but makes a location Open rather than player-owned. Empty player-controlled locations are not automatically reclaimed.
+- **LOCKED (v3.7): Station starts with 0 banked resources at setup**, then collects its normal station income during the **first round's income step** before its first Station Phase. Do not treat 0 starting resources as 0 income, or give it a separate opening bonus.
 - **Station income has a guaranteed minimum of 2 resources per round**, preventing complete economic starvation even if players control almost the whole map. Income is computed at the normal round-start income step from the number of Open locations; the exact scaling is for balancing.
 - **PROVISIONAL starting formula:** station income = **max(2, min(5, ceil(Open location count / 15)))**. This has a floor of 2, a cap of 5 income per round, and no cap on the station's accumulated bank. It is an initial balancing suggestion, **not a locked formula**. Under the provisional formula, player territory gains reduce station income, while eliminating a player or station reclamation may increase future station income.
 - The station's own Injection Point counts as Open for economic purposes unless a future specific board rule says otherwise; player-held Injection Points count for their players. This avoids silently treating the center as a separate fifth ownership type.
 
-**OPEN:** whether the provisional station-income formula and its income cap should become permanent, the station's opening resource bank, and precise timing of its round-start discard/draw/income relative to players. The two-resource minimum is locked; exact gains beyond that are not.
+**OPEN:** whether the provisional station-income formula and its income cap should become permanent, and precise timing of its round-start discard/draw/income relative to players. The two-resource minimum is locked; exact gains beyond that are not.
 
 **Design guidance, not a legality restriction:** Process/Update/Module cost 1–2 = basic, 3–4 = moderate, 5+ = powerful. Command costs need not conform to these tiers.
 
@@ -214,7 +215,7 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 ## 11. Design decisions still open
 
 Do **not** convert these to rules without explicit design agreement:
-1. Station behavior: health, Process AI, card/resource-driven deployment, third hand-size-7 escalation trigger, exact round-start timing, order and sequencing of station Process activations, escalation trigger timing, attack logic, damage effects and precise destruction sequence; station opening resource bank and final income scaling beyond its locked 2-resource floor.
+1. Station behavior: health, Process AI, card/resource-driven deployment, third hand-size-7 escalation trigger, exact round-start timing, order and sequencing of station Process activations, escalation trigger timing, attack logic, damage effects and precise destruction sequence; final income scaling beyond its locked 2-resource floor.
 2. Boss contribution and scoring tie-breaks; interaction with eliminated contributors and overkill.
 3. Exact multiplayer priority/Command stack response windows and trigger ordering.
 4. Line of sight and range on boards with removed/added connections.
