@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.0 · 2026-11-02  
+> **Design baseline:** v3.1 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -125,7 +125,15 @@ After the actions: capture the locations occupied by the active player's Process
 
 **After all surviving player turns**, the station acts **once per round**, in a dedicated **Station phase**. The station is the central enemy faction itself; every hostile Process or other force it deploys belongs to that single station adversary. The station is **not** inserted into the randomized player turn order and does **not** take an ordinary player turn by default. Once its phase completes, the round ends and the next round begins.
 
-**OPEN:** the station's exact number of actions/activations, decision policy, deployed forces, spawning, combat rules and effects. 'Acts once per round' means one **Station phase**, not an agreed limit of one individual enemy unit activation.
+### Station escalation — LOCKED concept, PROVISIONAL thresholds (v3.1)
+
+Every deployed hostile Process receives **one activation during each Station phase** (subject to normal rules for what that Process can legally do). Station difficulty scales primarily by how many hostile Processes it deploys/maintains, not by selecting only one of its Processes to act.
+
+The station starts with a **3-Process threat level**. When players reach a first proximity/progression trigger (suggested threshold **3**), the station escalates to a **5-Process threat level**. Reaching a second trigger (suggested threshold **6**) escalates again to **6 or more Processes**. These are intended as **station force-size targets**, not limits on the number of deployed hostile Processes that may activate: **each deployed hostile Process activates once**.
+
+**Escalation is irreversible.** Once a tier is triggered, the station never decreases its escalation level because players retreat, change position or are eliminated. Store the highest escalation tier reached in game state; do not derive the current tier solely from current Process positions.
+
+**OPEN — important geometric ambiguity:** If thresholds mean *distance from the center*, approaching the center crosses distance 6 **before** distance 3. To preserve the intended 3→5→6+ escalation ordering, define the metric explicitly (for example, inward progress from the player starting edges) before implementing triggers. Also open: whether force-size tiers are caps, target counts, or minimums; exact spawning/replenishment policy, trigger timing, whether one or any player's Process triggers escalation, exact second-tier number beyond 6, and hostile Process actions/AI.
 
 **Important:** 'play Updates/Modules during your own turn' does **not** imply unlimited plays or free timing in violation of the ordered actions. Their owner-turn permission and their once-per-turn fixed action slots both apply. Commands can be played between those steps and as responses without altering the fixed order.
 
@@ -182,7 +190,7 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 ## 11. Design decisions still open
 
 Do **not** convert these to rules without explicit design agreement:
-1. Station behavior: health, number/types of actions during its once-per-round Station phase, spawning/deployed forces, attack logic, damage effects and precise destruction sequence.
+1. Station behavior: health, Process AI, spawning/replenishment, exact escalation distance metric and trigger timing, interpretation of 3/5/6+ force-size tiers, attack logic, damage effects and precise destruction sequence.
 2. Boss contribution and scoring tie-breaks; interaction with eliminated contributors and overkill.
 3. Exact multiplayer priority/Command stack response windows and trigger ordering.
 4. Line of sight and range on boards with removed/added connections.
