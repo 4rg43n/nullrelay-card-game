@@ -1,11 +1,11 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v2.9 · 2026-11-02  
+> **Design baseline:** v3.0 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
 
-NullRelay is an original competitive tactical board/card game in the NullRelay science-fiction setting. Operators infiltrate and compete for territory on a space-station floor, deploy software-like **Processes** into physical locations, and use **Updates**, **Modules**, and reactive **Commands** to change the battle. A hostile central enemy (the station threat, thematically connected to the Reclaimed) creates a shared objective.
+NullRelay is an original competitive tactical board/card game in the NullRelay science-fiction setting. Operators infiltrate and compete for territory on a space-station floor, deploy software-like **Processes** into physical locations, and use **Updates**, **Modules**, and reactive **Commands** to change the battle. The hostile **station itself** is the shared enemy; any hostile forces it deploys act as its extensions, not as independent enemy factions.
 
 - Play on a spatial graph instead of an abstract row of creatures.
 - Make the **Operator** materially define a deck's strategy.
@@ -119,7 +119,13 @@ Each of these actions is **optional**, and each may happen **at most once**, in 
 3. **Mod one location:** pay and attach one Module to an owned location; replacing its previous Module discards it.
 4. **Activate one Process:** select one friendly Process, choosing **Move, Shoot, activated Ability, or Pass**. Other Processes remain idle.
 
-After the actions: capture the locations occupied by the active player's Processes, award end-turn territory points (provisional value), then pass the turn. After every surviving player has acted, the round ends.
+After the actions: capture the locations occupied by the active player's Processes, award end-turn territory points (provisional value), then pass the turn.
+
+### Station phase — LOCKED (v3.0)
+
+**After all surviving player turns**, the station acts **once per round**, in a dedicated **Station phase**. The station is the central enemy faction itself; every hostile Process or other force it deploys belongs to that single station adversary. The station is **not** inserted into the randomized player turn order and does **not** take an ordinary player turn by default. Once its phase completes, the round ends and the next round begins.
+
+**OPEN:** the station's exact number of actions/activations, decision policy, deployed forces, spawning, combat rules and effects. 'Acts once per round' means one **Station phase**, not an agreed limit of one individual enemy unit activation.
 
 **Important:** 'play Updates/Modules during your own turn' does **not** imply unlimited plays or free timing in violation of the ordered actions. Their owner-turn permission and their once-per-turn fixed action slots both apply. Commands can be played between those steps and as responses without altering the fixed order.
 
@@ -176,7 +182,7 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 ## 11. Design decisions still open
 
 Do **not** convert these to rules without explicit design agreement:
-1. Central enemy behavior: health, attack, turns/actions, spawning, attack logic, damage effects and precise destruction sequence.
+1. Station behavior: health, number/types of actions during its once-per-round Station phase, spawning/deployed forces, attack logic, damage effects and precise destruction sequence.
 2. Boss contribution and scoring tie-breaks; interaction with eliminated contributors and overkill.
 3. Exact multiplayer priority/Command stack response windows and trigger ordering.
 4. Line of sight and range on boards with removed/added connections.
