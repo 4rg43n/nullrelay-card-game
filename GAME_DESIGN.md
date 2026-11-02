@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.8 · 2026-11-02  
+> **Design baseline:** v3.9 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -28,6 +28,8 @@ Every location tracks:
 - **Installed Module:** zero or one.
 
 An Injection Point is initially a faction's spawn location. Players can deploy at any **empty owned spawn** location; a captured spawn must be vacated before deployment. Ordinary locations do not automatically serve as deployment sites. **Only Processes occupy the grid.**
+
+**Station spawning — LOCKED (v3.9):** The station's **central Injection Point (4,4)** is its **initial spawn location** on the standard 9×9 board. During its once-per-phase Start action, it may deploy **one** paid Process from hand to that location if empty, or to another **empty spawn location available to the station**. Other explicitly marked spawn locations may become available through station reclamation or card/board effects. **Open does not mean spawn:** ordinary Open corridors are station economic territory but are never automatically legal deployment sites. Open spawn locations are available to the station; player-controlled spawns are not, unless a card explicitly overrides this rule. No free Process appears simply because the station escalates.
 
 ### Capturing and eliminating players — LOCKED
 
@@ -228,7 +230,7 @@ Do **not** convert these to rules without explicit design agreement:
 2. Boss contribution and scoring tie-breaks; interaction with eliminated contributors and overkill.
 3. Exact multiplayer priority/Command stack response windows and trigger ordering.
 4. Line of sight and range on boards with removed/added connections.
-5. Initial spawn positioning and any board obstacles beyond the five Injection Points.
+5. Additional spawn locations, and any board obstacles beyond the five initial Injection Points.
 6. Full Operator/Process/Command/Update/Module card catalog, costs, icons and keyword glossary.
 7. Detailed rules for optional activation, card-specific exceptions, duration of effects and damage/heal timing.
 8. AI strategy, difficulty, multiplayer networking and UI/UX.
