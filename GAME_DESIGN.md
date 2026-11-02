@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.5 · 2026-11-02  
+> **Design baseline:** v3.6 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -23,7 +23,7 @@ The board is a **graph of locations**. Initially, only orthogonally adjacent nor
 
 Every location tracks:
 - **Kind:** normal, spawn, or Injection Point.
-- **Ownership:** neutral or one of up to four players.
+- **Ownership:** **Open** (the station's economic territory) or controlled by one of up to four players. Open is not a fifth player ownership color.
 - **Occupant:** zero or **one** Process (of any faction).
 - **Installed Module:** zero or one.
 
@@ -31,9 +31,9 @@ An Injection Point is initially a faction's spawn location. Players can deploy a
 
 ### Capturing and eliminating players — LOCKED
 
-At the **end of the active player's turn**, a location occupied by one of that player's Processes becomes owned by that player. Ownership remains after the Process leaves until another player captures it or the owner is eliminated. A Process being destroyed does **not** by itself neutralize its location.
+At the **end of the active player's turn**, a location occupied by one of that player's Processes becomes owned by that player. Ownership remains after the Process leaves until another player captures it or the owner is eliminated. A Process being destroyed does **not** by itself change the location to Open.
 
-Capturing another player's Injection Point eliminates that player. Their Operator is turned face down; they cease taking turns, earning resources or scoring, and cannot receive the boss bonus. All their owned territory becomes neutral. All their deployed Processes and attached Updates and their installed Modules leave play; destroyed/on-board Processes go to the **Graveyard**, while Updates and Modules go to **Discard**. A captured player Injection Point becomes a regular spawn.
+Capturing another player's Injection Point eliminates that player. Their Operator is turned face down; they cease taking turns, earning resources or scoring, and cannot receive the boss bonus. All their owned territory becomes Open (and therefore contributes to station economy from the next income calculation). All their deployed Processes and attached Updates and their installed Modules leave play; destroyed/on-board Processes go to the **Graveyard**, while Updates and Modules go to **Discard**. A captured player Injection Point becomes a regular spawn.
 
 The central hostile Injection Point **cannot be captured by ordinary location control**. The game ends only when the central hostile enemy is destroyed. The design must separately represent enemy health/state and its central objective; do not treat it as an ordinary capturable player Injection Point.
 
@@ -48,13 +48,23 @@ The central hostile Injection Point **cannot be captured by ordinary location co
 
 **OPEN:** tie-break for boss contribution, ranking ties, enemy stats/actions, overkill/mitigation accounting for contribution, and exact victory timing relative to other pending effects.
 
-## 4. Resources — LOCKED
+## 4. Resources — LOCKED player economy; station economy v3.6
 
 - At the **start of each round**, every surviving player gains **1 resource per location owned**, capped at **5 resources of income per round** (configurable).
 - Income is evaluated **once** at round start. A location captured during the round does not produce income until the following round. A subsequent loss does not retroactively subtract income.
 - **Unspent resources carry over indefinitely; there is no storage cap.** The value 5 limits *income per round*, not holdings or card costs.
 - Starting bank is set by board. Standard default **2**, so with a starting Injection Point providing 1 income, a standard player has **3 resources available during round 1**.
 - All non-Operator card types have a resource cost. Operator cards themselves cost 0; activated abilities may have resource costs.
+
+### Station economy and reclamation — LOCKED mechanic, PROVISIONAL formula (v3.6)
+
+- **Every Open location supports the station economically**, without being represented as an ordinary player-owned color or scoring as player territory. The station uses its own resource bank and pays for cards in the usual way.
+- **Station reclamation:** at the **end of each Station Phase**, each location occupied by a surviving station Process changes to **Open** if previously player-controlled. Remove any installed Module on a location whose control changes, sending it to its owner's Discard. This is analogous to end-turn player captures but makes a location Open rather than player-owned. Empty player-controlled locations are not automatically reclaimed.
+- **Station income has a guaranteed minimum of 2 resources per round**, preventing complete economic starvation even if players control almost the whole map. Income is computed at the normal round-start income step from the number of Open locations; the exact scaling is for balancing.
+- **PROVISIONAL starting formula:** station income = **max(2, min(5, ceil(Open location count / 15)))**. This has a floor of 2, a cap of 5 income per round, and no cap on the station's accumulated bank. It is an initial balancing suggestion, **not a locked formula**. Under the provisional formula, player territory gains reduce station income, while eliminating a player or station reclamation may increase future station income.
+- The station's own Injection Point counts as Open for economic purposes unless a future specific board rule says otherwise; player-held Injection Points count for their players. This avoids silently treating the center as a separate fifth ownership type.
+
+**OPEN:** whether the provisional station-income formula and its income cap should become permanent, the station's opening resource bank, and precise timing of its round-start discard/draw/income relative to players. The two-resource minimum is locked; exact gains beyond that are not.
 
 **Design guidance, not a legality restriction:** Process/Update/Module cost 1–2 = basic, 3–4 = moderate, 5+ = powerful. Command costs need not conform to these tiers.
 
@@ -204,7 +214,7 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 ## 11. Design decisions still open
 
 Do **not** convert these to rules without explicit design agreement:
-1. Station behavior: health, Process AI, card/resource-driven deployment, third hand-size-7 escalation trigger, exact round-start timing, order and sequencing of station Process activations, escalation trigger timing, attack logic, damage effects and precise destruction sequence.
+1. Station behavior: health, Process AI, card/resource-driven deployment, third hand-size-7 escalation trigger, exact round-start timing, order and sequencing of station Process activations, escalation trigger timing, attack logic, damage effects and precise destruction sequence; station opening resource bank and final income scaling beyond its locked 2-resource floor.
 2. Boss contribution and scoring tie-breaks; interaction with eliminated contributors and overkill.
 3. Exact multiplayer priority/Command stack response windows and trigger ordering.
 4. Line of sight and range on boards with removed/added connections.
