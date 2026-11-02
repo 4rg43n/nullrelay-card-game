@@ -25,7 +25,7 @@ This project is **in the design / pre-implementation phase**. The initial implem
 - Round-start income **1 per owned cell, max 5 *income per round***, stored resources uncapped. Standard starting bank 2; initial owned Injection Point yields 1 on round 1.
 - Each player activates **one** Process per turn. Slow/Normal/Fast all Move at most one edge; Slow cannot Move on deployment round or after moving previous round, Normal cannot Move on deployment round, Fast can.
 - Process Attack is a **single stat**; damage persists. Entering an enemy-occupied connected neighboring cell initiates simultaneous melee. Shooting allows simultaneous retaliation only if defender can reach shooter.
-- Operator has exactly one passive and one activated ability; activated ability at most once/round and does not consume a fixed action. **Owner-turn-only timing is NOT YET APPROVED**.
+- Operator has exactly one passive and one activated ability; activated ability at most once/round and does not consume a fixed action. **Activated abilities are restricted to their Operator owner's turn (LOCKED v2.9); reactive off-turn play belongs to Commands.**
 - Commands can be used during anyone's turn, as responses, globally by default; paid on play, LIFO response resolution, canceled Commands go to Discard. Some detailed priority rules remain open.
 - Provisional scoring: +1/owned cell at end of player's turn; +1/per boss damage; +50 to surviving player with largest total contribution when boss is destroyed.
 
@@ -57,7 +57,7 @@ Write tests at the rule layer. Cover at minimum:
 6. **Combat:** simultaneous attacks; ranged retaliation only in range; persistent damage; no defense stat; both-dead melee stays empty and location ownership unchanged.
 7. **Zones:** hand-discarded Process → Discard; destroyed board Process → Graveyard; Update → Discard; replacement cleanup; reshuffle excludes Graveyard.
 8. **Commands:** any-turn play, LIFO nested responses, paid-before-resolution, canceled Commands to Discard, global default targeting with card exceptions.
-9. **Operator abilities:** passive effects disabled upon elimination, once-per-round activated usage, not consuming fixed actions; **do not assert owner-turn-only pending decision**.
+9. **Operator abilities:** passive effects disabled upon elimination, once-per-round activated usage, not consuming fixed actions; **owner-turn-only is confirmed; reject off-turn Operator activations**.
 10. **Scoring:** boss damage accumulated per player throughout match; only surviving top contributor receives provisional +50; territory points at end of player's turn.
 
 Add regression tests before fixing a bug. For every new mechanic, test both an ordinary case and at least one counterexample.
@@ -79,7 +79,7 @@ Use concise, legible Markdown and specific examples. Prefer stable terminology (
 2. Setup, turn/round transitions, legality checks, resource bank and territory control.
 3. Process deployment, activation, movement, melee, shooting and destruction.
 4. Fixed action slots, Updates and Modules, then Commands and stack/priority.
-5. Operator passive/activated effects once timing is settled.
+5. Operator passive/activated effects with owner-turn-only activated timing.
 6. Central hostile enemy and scoring after its unresolved detailed rules are agreed.
 7. Playable single-player UI and AI opponents using the same rules interface; future multiplayer.
 
@@ -87,7 +87,7 @@ These are suggested implementation milestones, **not permission to decide open g
 
 ## Known unresolved design decisions
 
-See **GAME_DESIGN.md §11**, especially Operator activated ability timing, central enemy behavior/stats, contribution ties, Command priority details, range/line-of-sight and the initial card catalog. An agent should surface these prominently when they block implementation.
+See **GAME_DESIGN.md §11**, especially central enemy behavior/stats, contribution ties, Command priority details, range/line-of-sight and the initial card catalog. An agent should surface these prominently when they block implementation.
 
 ## Repository housekeeping
 
