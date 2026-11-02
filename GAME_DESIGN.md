@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.2 · 2026-11-02  
+> **Design baseline:** v3.3 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -125,7 +125,7 @@ After the actions: capture the locations occupied by the active player's Process
 
 **After all surviving player turns**, the station acts **once per round**, in a dedicated **Station phase**. The station is the central enemy faction itself; every hostile Process or other force it deploys belongs to that single station adversary. The station is **not** inserted into the randomized player turn order and does **not** take an ordinary player turn by default. Once its phase completes, the round ends and the next round begins.
 
-### Station escalation — LOCKED progression and boundary visibility, PROVISIONAL thresholds (v3.2)
+### Station escalation — LOCKED board zones (v3.3), PROVISIONAL force sizes
 
 Every deployed hostile Process receives **one activation during each Station phase** (subject to normal rules for what that Process can legally do). Station difficulty scales primarily by how many hostile Processes it deploys/maintains, not by selecting only one of its Processes to act.
 
@@ -135,7 +135,15 @@ The station starts with a **3-Process threat level**. When players reach a first
 
 **LOCKED (v3.2) — inward progression, visually marked:** Escalation triggers as player-controlled Processes advance **inward from the player starting edges toward the station core**, not by measuring a remaining-radius value outward from the center. Show **dotted boundary lines on the board** separating escalation zones so players can anticipate when their advance will increase the station's alert tier. Once a zone triggers, its escalation remains active even if the triggering Process retreats or dies. Dotted zone markers are board UI guidance; do not confuse their appearance with traversable board-graph connections.
 
-**OPEN — precise boundary geometry:** On the standard 9×9 board the cardinal Injection Points are just **4 orthogonal steps from the center**; therefore the originally suggested progression thresholds **3 and 6** cannot both be literal inward steps to the center on this board. Keep the two escalating tiers and their provisional force sizes, but do not hardcode literal 3/6 inward-ring boundaries. Choose board-valid configurable inward-depth thresholds (for example **2 and 3**, or **3 and 4**) after owner approval. Also open: how to determine inward depth off the four centerward axes; whether force-size tiers are caps, targets or minimums; exact spawning/replenishment policy, when during movement thresholds trigger, whether any one player's Process triggers escalation, exact second-tier number beyond 6, and hostile Process actions/AI.
+**LOCKED (v3.3) — precise zones on the standard 9×9 board:** Use zero-based coordinates **(row, column) = 0…8**, center **(4,4)**. The approved diagram defines two nested square boundaries, **not circular radii or graph-distance rings**:
+
+- **Tier 0, initial:** outer region, starting station force-size target **3** Processes.
+- **Tier 1:** when **any player-controlled Process reaches** a cell with **row 2…6 and column 2…6** (inclusive), i.e. the central **5×5 square**, escalation rises to Tier 1, station target **5** Processes. Draw a dotted perimeter around this 5×5 zone.
+- **Tier 2:** when any player-controlled Process reaches a cell with **row 3…5 and column 3…5** (inclusive), i.e. the central **3×3 square**, escalation rises to Tier 2, station target **6+** Processes. Draw a second, distinct dotted perimeter around this 3×3 zone.
+
+Thus the boundaries are **2** and **3** squares inward from the closest outer board edge, respectively. The approved 5×5 / 3×3 diagram is authoritative for zone geometry; **a boundary cell counts as inside**. Escalation is global and monotonic: entering the inner zone implies both thresholds have been attained; retreat, death or changes in ownership never lower an attained tier. For nonstandard boards, use explicitly configured equivalent escalation regions rather than hardcoding 9×9 coordinates.
+
+**OPEN:** whether force-size tiers are caps, targets or minimums; exact spawning/replenishment, when in the movement/Command resolution sequence to evaluate zone entry, exact second-tier number beyond 6, and hostile Process actions/AI.
 
 **Important:** 'play Updates/Modules during your own turn' does **not** imply unlimited plays or free timing in violation of the ordered actions. Their owner-turn permission and their once-per-turn fixed action slots both apply. Commands can be played between those steps and as responses without altering the fixed order.
 
@@ -192,7 +200,7 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 ## 11. Design decisions still open
 
 Do **not** convert these to rules without explicit design agreement:
-1. Station behavior: health, Process AI, spawning/replenishment, **exact board-valid inward escalation zone boundaries** (the original 3/6 step suggestions do not both fit a 9×9 board), trigger timing, interpretation of 3/5/6+ force-size tiers, attack logic, damage effects and precise destruction sequence.
+1. Station behavior: health, Process AI, spawning/replenishment, trigger timing, interpretation of 3/5/6+ force-size tiers, attack logic, damage effects and precise destruction sequence.
 2. Boss contribution and scoring tie-breaks; interaction with eliminated contributors and overkill.
 3. Exact multiplayer priority/Command stack response windows and trigger ordering.
 4. Line of sight and range on boards with removed/added connections.
