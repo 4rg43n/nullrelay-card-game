@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.7 · 2026-11-02  
+> **Design baseline:** v3.8 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -134,7 +134,16 @@ After the actions: capture the locations occupied by the active player's Process
 
 ### Station phase — LOCKED (v3.0)
 
-**After all surviving player turns**, the station acts **once per round**, in a dedicated **Station phase**. The station is the central enemy faction itself; every hostile Process or other force it deploys belongs to that single station adversary. The station is **not** inserted into the randomized player turn order and does **not** take an ordinary player turn by default. Once its phase completes, the round ends and the next round begins.
+**After all surviving player turns**, the station acts **once per round**, in a dedicated **Station phase**. The station is the central enemy faction itself; every hostile Process or other force it deploys belongs to that single station adversary. The station is **not** inserted into the randomized player turn order. Once its phase completes, the round ends and the next round begins.
+
+**LOCKED (v3.8) — station action limits and order:** The station follows the same ordered action slots as a player, with only the final activation slot expanded:
+
+1. **Start one Process** — optional, at most one legal, paid deployment at an empty eligible station spawn.
+2. **Update one Process** — optional, at most one legal, paid Update to its Process.
+3. **Mod one location** — optional, at most one legal, paid Module to a location eligible for station modification.
+4. **Activate deployed Processes** — each deployed hostile Process may take **one legal activation**, rather than selecting a single Process as a player does. No Process activates more than once in this phase by default.
+
+Actions 1–3 are limited to once per Station Phase, not once *per hostile Process*. Their ordering is fixed, and the station cannot skip forward then return to an earlier slot. Commands remain instant/reactive under normal Command rules, not additional Start/Update/Mod actions. Exact ordering among multiple hostile Process activations remains open.
 
 ### Station escalation — LOCKED zones and expanding station hand (v3.4)
 
