@@ -4,7 +4,7 @@
 
 This repository implements the original **NullRelay** tactical board/card game. Read **[GAME_DESIGN.md](GAME_DESIGN.md)** *before* planning or changing gameplay. This file tells future human/AI contributors how to preserve the design; GAME_DESIGN.md is the canonical game specification.
 
-This project is **in the design / pre-implementation phase**. The initial implementation is intended to be playable with **P1 human, P2–P4 AI**, plus a hostile central AI enemy; multiplayer can follow. The user owns game-design decisions.
+This project is **in the design / pre-implementation phase**. The initial implementation is intended to be playable with **P1 human, P2–P4 AI**, plus a hostile station AI faction; multiplayer can follow. The user owns game-design decisions.
 
 ## Non-negotiable collaboration rules
 
@@ -19,8 +19,9 @@ This project is **in the design / pre-implementation phase**. The initial implem
 
 ## Canonical baseline in brief
 
-- Standard map: **9×9**, orthogonal connection graph. Player Injection Points at the four edge midpoints; hostile Injection Point at center. Only Processes occupy cells; maximum one Process per cell and one Module per location.
+- Standard map: **9×9**, orthogonal connection graph. Player Injection Points at the four edge midpoints; hostile station Injection Point at center. Only Processes occupy cells; maximum one Process per cell and one Module per location.
 - **End-of-owner-turn** occupation captures territory; ownership persists after departure. Capture a player's Injection Point to eliminate them; the hostile center cannot be captured normally.
+- **Station phase (LOCKED v3.0):** after every surviving player has taken a turn, the hostile station faction acts in its own once-per-round phase, then the round ends. All hostile deployed forces belong to the station; the station does not occupy a position in randomized player order. How many enemy forces can act within that phase remains **OPEN**.
 - 30 cards/deck; max 3 copies of a card; 1 Operator outside deck. Start 4 cards; at each round start optionally discard any number and draw **up to 4**, no hand limit. Draw pile reshuffles from Discard when exhausted; Graveyard stays separate.
 - Round-start income **1 per owned cell, max 5 *income per round***, stored resources uncapped. Standard starting bank 2; initial owned Injection Point yields 1 on round 1.
 - Each player activates **one** Process per turn. Slow/Normal/Fast all Move at most one edge; Slow cannot Move on deployment round or after moving previous round, Normal cannot Move on deployment round, Fast can.
@@ -50,7 +51,7 @@ Do not implement a speculative networking layer or large content system before t
 Write tests at the rule layer. Cover at minimum:
 
 1. **Board setup:** 9×9, four edge Injection Points and one center enemy objective; links orthogonal by default; occupancy max one.
-2. **Turn phases:** round-start discard/draw/income order; player turns in fixed randomized order; exactly four optional action slots in fixed sequence; at most one Process activates.
+2. **Turn phases:** round-start discard/draw/income order; player turns in fixed randomized order; exactly four optional action slots in fixed sequence; at most one player Process activates; **one station phase after all player turns** (not an extra ordinary player turn).
 3. **Economy:** income cap applies to *income*, not storage. Resources bank across turns; 2 initial + 1 first-round income. No income from locations captured later that round.
 4. **Spawn/ownership:** deployment only at empty owned spawns, end-turn capture, location ownership persists without occupant, Modules destroyed on capture, player elimination effects.
 5. **Movement:** each type's deployment-round eligibility, Slow previous-round cooldown including blocked melee moves, exactly one graph edge of movement.
@@ -80,7 +81,7 @@ Use concise, legible Markdown and specific examples. Prefer stable terminology (
 3. Process deployment, activation, movement, melee, shooting and destruction.
 4. Fixed action slots, Updates and Modules, then Commands and stack/priority.
 5. Operator passive/activated effects with owner-turn-only activated timing.
-6. Central hostile enemy and scoring after its unresolved detailed rules are agreed.
+6. Station-faction action policy, deployed forces, central objective and scoring once unresolved detailed rules are agreed.
 7. Playable single-player UI and AI opponents using the same rules interface; future multiplayer.
 
 These are suggested implementation milestones, **not permission to decide open gameplay rules**.
