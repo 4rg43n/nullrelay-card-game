@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v2.8 · 2026-11-02  
+> **Design baseline:** v2.9 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -70,11 +70,11 @@ The central hostile Injection Point **cannot be captured by ordinary location co
 
 An existing Module is destroyed/discarded on a change of location ownership. Modules persist when Processes leave. Process destruction sends its attached Update to Discard. See section 10 for destinations.
 
-### Operator abilities — LOCKED except timing question
+### Operator abilities — LOCKED
 
 Each Operator has exactly **one passive** and **one activated** printed ability. The passive is active while that Operator remains in play. The activated ability can be used **at most once per round**, can have a resource cost, and **does not consume** any of the four fixed turn actions. An eliminated Operator has neither ability active.
 
-**OPEN — explicitly not agreed yet:** whether the Operator's activated ability is usable **only during its owner's turn** (recommended in the last discussion), or may also be used outside that turn. Passive/triggered effects apply whenever their conditions are met. Do not implement the recommendation as a confirmed rule.
+**LOCKED (v2.9):** An Operator's activated ability can only be used **during that Operator owner's turn**, at any legal point without consuming a fixed turn action, and at most once per round. It cannot be activated reactively on an opponent's turn. **Commands** are the instants used to intervene outside one's turn or in response to other effects. Operator passive and triggered effects still function whenever their conditions occur, unless their card text restricts them.
 
 ### Process cards — LOCKED
 
@@ -176,15 +176,14 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 ## 11. Design decisions still open
 
 Do **not** convert these to rules without explicit design agreement:
-1. **Operator activated ability timing:** owner-turn-only recommendation is unconfirmed.
-2. Central enemy behavior: health, attack, turns/actions, spawning, attack logic, damage effects and precise destruction sequence.
-3. Boss contribution and scoring tie-breaks; interaction with eliminated contributors and overkill.
-4. Exact multiplayer priority/Command stack response windows and trigger ordering.
-5. Line of sight and range on boards with removed/added connections.
-6. Initial spawn positioning and any board obstacles beyond the five Injection Points.
-7. Full Operator/Process/Command/Update/Module card catalog, costs, icons and keyword glossary.
-8. Detailed rules for optional activation, card-specific exceptions, duration of effects and damage/heal timing.
-9. AI strategy, difficulty, multiplayer networking and UI/UX.
+1. Central enemy behavior: health, attack, turns/actions, spawning, attack logic, damage effects and precise destruction sequence.
+2. Boss contribution and scoring tie-breaks; interaction with eliminated contributors and overkill.
+3. Exact multiplayer priority/Command stack response windows and trigger ordering.
+4. Line of sight and range on boards with removed/added connections.
+5. Initial spawn positioning and any board obstacles beyond the five Injection Points.
+6. Full Operator/Process/Command/Update/Module card catalog, costs, icons and keyword glossary.
+7. Detailed rules for optional activation, card-specific exceptions, duration of effects and damage/heal timing.
+8. AI strategy, difficulty, multiplayer networking and UI/UX.
 
 ## 12. Guiding examples / tests
 
