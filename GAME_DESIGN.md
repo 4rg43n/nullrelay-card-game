@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.3 · 2026-11-02  
+> **Design baseline:** v3.4 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -125,11 +125,15 @@ After the actions: capture the locations occupied by the active player's Process
 
 **After all surviving player turns**, the station acts **once per round**, in a dedicated **Station phase**. The station is the central enemy faction itself; every hostile Process or other force it deploys belongs to that single station adversary. The station is **not** inserted into the randomized player turn order and does **not** take an ordinary player turn by default. Once its phase completes, the round ends and the next round begins.
 
-### Station escalation — LOCKED board zones (v3.3), PROVISIONAL force sizes
+### Station escalation — LOCKED zones and expanding station hand (v3.4)
 
-Every deployed hostile Process receives **one activation during each Station phase** (subject to normal rules for what that Process can legally do). Station difficulty scales primarily by how many hostile Processes it deploys/maintains, not by selecting only one of its Processes to act.
+**LOCKED (v3.4):** The station is a **card-playing adversary**, using its **own deck, hand, resource bank, Processes, Commands, Updates, Modules, Discard and Graveyard** under the same underlying game rules as the player factions, except for explicitly agreed station-specific mechanics. Its deployed force emerges from legal card plays, rather than automatic escalation spawning.
 
-The station starts with a **3-Process threat level**. When players reach a first proximity/progression trigger (suggested threshold **3**), the station escalates to a **5-Process threat level**. Reaching a second trigger (suggested threshold **6**) escalates again to **6 or more Processes**. These are intended as **station force-size targets**, not limits on the number of deployed hostile Processes that may activate: **each deployed hostile Process activates once**.
+**RULE INTERACTION TO RESOLVE:** The earlier station-specific rule gives **every deployed hostile Process one activation each Station phase**. The new 'same rules as players' intent would ordinarily mean **one Process activation** per turn. Preserve this prior exception for now, but explicitly seek a decision before implementing its activation economy; do not silently erase or generalize it.
+
+**LOCKED (v3.4):** Escalation increases the station's **draw-to hand-size target**, not its automatically deployed Process count. The station begins at **4**, increases to **5** at the first board threshold, **6** at the second, and has an intended later target of **7** at a **not-yet-defined third escalation trigger**. With the currently approved two dotted zones, the standard board supports 4 → 5 → 6; **do not invent a third dotted boundary** for 7.
+
+At its regular round-start draw step, the station draws **up to its current target**; existing cards remain in hand, and hand size has no hard maximum. An escalation increases future draw capacity, **not an immediate draw or an automatic Process deployment**. The former suggested fixed hostile force-size tiers **3 → 5 → 6+** are **superseded as station spawning/force requirements**; actual deployment depends on legal cards, resources, locations and station decisions.
 
 **Escalation is irreversible.** Once a tier is triggered, the station never decreases its escalation level because players retreat, change position or are eliminated. Store the highest escalation tier reached in game state; do not derive the current tier solely from current Process positions.
 
@@ -137,13 +141,13 @@ The station starts with a **3-Process threat level**. When players reach a first
 
 **LOCKED (v3.3) — precise zones on the standard 9×9 board:** Use zero-based coordinates **(row, column) = 0…8**, center **(4,4)**. The approved diagram defines two nested square boundaries, **not circular radii or graph-distance rings**:
 
-- **Tier 0, initial:** outer region, starting station force-size target **3** Processes.
-- **Tier 1:** when **any player-controlled Process reaches** a cell with **row 2…6 and column 2…6** (inclusive), i.e. the central **5×5 square**, escalation rises to Tier 1, station target **5** Processes. Draw a dotted perimeter around this 5×5 zone.
-- **Tier 2:** when any player-controlled Process reaches a cell with **row 3…5 and column 3…5** (inclusive), i.e. the central **3×3 square**, escalation rises to Tier 2, station target **6+** Processes. Draw a second, distinct dotted perimeter around this 3×3 zone.
+- **Tier 0, initial:** outer region, station draw-to hand-size target **4**.
+- **Tier 1:** when **any player-controlled Process reaches** a cell with **row 2…6 and column 2…6** (inclusive), i.e. the central **5×5 square**, escalation rises to Tier 1, station hand-size target **5**. Draw a dotted perimeter around this 5×5 zone.
+- **Tier 2:** when any player-controlled Process reaches a cell with **row 3…5 and column 3…5** (inclusive), i.e. the central **3×3 square**, escalation rises to Tier 2, station hand-size target **6**. Draw a second, distinct dotted perimeter around this 3×3 zone.
 
 Thus the boundaries are **2** and **3** squares inward from the closest outer board edge, respectively. The approved 5×5 / 3×3 diagram is authoritative for zone geometry; **a boundary cell counts as inside**. Escalation is global and monotonic: entering the inner zone implies both thresholds have been attained; retreat, death or changes in ownership never lower an attained tier. For nonstandard boards, use explicitly configured equivalent escalation regions rather than hardcoding 9×9 coordinates.
 
-**OPEN:** whether force-size tiers are caps, targets or minimums; exact spawning/replenishment, when in the movement/Command resolution sequence to evaluate zone entry, exact second-tier number beyond 6, and hostile Process actions/AI.
+**OPEN:** location/timing of a third escalation to hand-size **7**; station round-start discard/draw/income timing relative to the player round-start procedure; detailed card-driven deployment and AI behavior; when in the movement/Command resolution sequence to evaluate zone entry; and whether every hostile Process activates in a Station phase (the prior station exception) or station follows the one-activation player rule.
 
 **Important:** 'play Updates/Modules during your own turn' does **not** imply unlimited plays or free timing in violation of the ordered actions. Their owner-turn permission and their once-per-turn fixed action slots both apply. Commands can be played between those steps and as responses without altering the fixed order.
 
@@ -200,7 +204,7 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 ## 11. Design decisions still open
 
 Do **not** convert these to rules without explicit design agreement:
-1. Station behavior: health, Process AI, spawning/replenishment, trigger timing, interpretation of 3/5/6+ force-size tiers, attack logic, damage effects and precise destruction sequence.
+1. Station behavior: health, Process AI, card/resource-driven deployment, third hand-size-7 escalation trigger, exact round-start timing, conflict between all-hostiles-activate and player one-activation rule, escalation trigger timing, attack logic, damage effects and precise destruction sequence.
 2. Boss contribution and scoring tie-breaks; interaction with eliminated contributors and overkill.
 3. Exact multiplayer priority/Command stack response windows and trigger ordering.
 4. Line of sight and range on boards with removed/added connections.
