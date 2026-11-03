@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.11 · 2026-11-02  
+> **Design baseline:** v3.12 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -82,6 +82,8 @@ The central hostile Injection Point **cannot be captured by ordinary location co
 | **Command** | Instant, reactive effect | Can be played on any player's turn; does not consume a fixed turn action |
 | **Update** | Modify a friendly Process | Only during owner's turn, using the single Update action; one per Process, replacement discards old Update |
 | **Module** | Modify an owned location | Only during owner's turn, using the single Mod action; one per location, replacement discards old Module |
+
+**Station Updates, Modules and Commands — LOCKED (v3.12):** The station uses **exactly the same rules for Updates, Modules and Commands as player factions**. It may attach one Update to one of its own Processes using its one paid Update slot per Station Phase, subject to the same replacement, attachment and card-text rules. It may install one Module using its one paid Mod slot; Open locations count as the station's controlled locations. Its Commands are playable at the same times as player Commands—including during player turns, between actions, in response to attacks and other Commands—and follow identical costs, legal targets, global range defaults, LIFO stack/priority rules and Discard handling. There are **no station-specific bonuses or additional plays** for any of these three card types. The station's special activation rule does not grant additional Update or Mod slots.
 
 **Station Modules — LOCKED (v3.11):** The station treats **Open** locations as its controlled locations for Module placement. It may install a Module at **any Open location** during its one Mod action each Station Phase, without needing a station Process to occupy the space. It cannot install on player-controlled locations unless explicit card text overrides the rule. When a player captures an Open location, the station's installed Module goes to its Discard, exactly as an opponent's Module would on any control change.
 
