@@ -34,6 +34,8 @@ This project is **in the design / pre-implementation phase**. The initial implem
 
 Refer to GAME_DESIGN.md for important exceptions and definitions. This summary is intentionally insufficient as an implementation spec.
 
+**Narrative guardrail:** NOXENGINE and VOIDSYNC are intentionally mysterious, not confirmed enemies. Do not use either as a default Station Operator, assign villain status, or reveal their allegiance. Station Operator names should read like terminal operations or processes and suggest their mechanics. `REMOVE/REPLACE`, `KILL/ERASE`, etc. are proposals, **not approved card definitions**.
+
 ## Suggested architecture (guidance, not a mandated framework)
 
 Define concepts explicitly:
