@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.13 · 2026-11-02  
+> **Design baseline:** v3.14 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -101,9 +101,11 @@ The station has **one Operator of its own**, separate from its deck, like each p
 
 A Station Operator **remains an Operator** and by default has exactly **one passive and one activated ability**, the same zero card cost and once-per-round activation limit. Its activated ability may be used only during the **Station Phase** (the station's own turn) and does not consume Start, Update, Mod or Process-activation slots. Passives follow the normal passive rules. Being a Station Operator does **not** itself grant additional actions or new timing permissions; any exceptional abilities must be explicitly printed and agreed.
 
-**Narrative design direction:** Keep **NOXENGINE** and **VOIDSYNC** enigmatic and morally ambiguous; do not make either a standard Station Operator or canonically establish either as the villain. Prefer terminal/process-style names that imply mechanical identity (e.g. `REMOVE/REPLACE`, `KILL/ERASE`, `SCAN/TRACE`, `LOCK/DENY`). These are *candidates*, not approved cards, abilities or final names.
+**First official Station Operator — LOCKED (v3.14): `REMOVE/REPLACE`.** This is the approved starting Station Operator name and identity. It is a **Station Operator** (not selectable by normal human/AI players) and retains the standard requirement of **one passive and one activated ability**. Its intended theme is overwriting/replacing player infrastructure, but **neither printed ability, cost, target, timing exception nor numeric effect has been designed or approved**. Do not implement invented card effects. Default station setup can select `REMOVE/REPLACE` once its abilities are specified; until then its card definition is incomplete.
 
-**Implementation note:** represent the subtype/eligibility as card data (e.g. `operatorKind: "station"` versus `"player"`), not a mandatory separate software class. Share common Operator state, validation and ability handling; station-only effect implementations may be distinct. **OPEN:** actual Station Operator identity, passive/activated abilities, and whether future scenario variants should have additional subtype-specific constraints.
+**Narrative design direction:** Keep **NOXENGINE** and **VOIDSYNC** enigmatic and morally ambiguous; do not make either a standard Station Operator or canonically establish either as the villain. Prefer terminal/process-style names that imply mechanical identity. `KILL/ERASE`, `SCAN/TRACE` and `LOCK/DENY` are still **candidates**, not approved cards or final names.
+
+**Implementation note:** represent the subtype/eligibility as card data (e.g. `operatorKind: "station"` versus `"player"`), not a mandatory separate software class. Share common Operator state, validation and ability handling; station-only effect implementations may be distinct. **OPEN:** `REMOVE/REPLACE`'s passive/activated abilities, and whether future scenario variants should have additional subtype-specific constraints.
 
 ### Process cards — LOCKED
 
