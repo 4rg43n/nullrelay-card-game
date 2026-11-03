@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.17 · 2026-11-02  
+> **Design baseline:** v3.18 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -196,7 +196,7 @@ Thus the boundaries are **2** and **3** squares inward from the closest outer bo
 
 **Important:** 'play Updates/Modules during your own turn' does **not** imply unlimited plays or free timing in violation of the ordered actions. Their owner-turn permission and their once-per-turn fixed action slots both apply. Commands can be played between those steps and as responses without altering the fixed order.
 
-**OPEN:** detailed timing of phase boundaries, priority passing, triggered effects, start/end hooks and what happens if a player is eliminated mid-round.
+**OPEN:** detailed timing of phase boundaries, priority passing, ordering of simultaneous or chained triggered effects, start/end hooks and what happens if a player is eliminated mid-round.
 
 ## 8. Process activation, movement and combat — LOCKED
 
@@ -224,7 +224,15 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 
 **OPEN:** target selection constraints, obstruction/line-of-sight, whether base melee retaliation is impacted by other card effects, simultaneous death timing and general damage prevention rules.
 
-## 9. Commands: timing, stack and targeting — LOCKED
+## 9. Triggered abilities and Commands
+
+### Triggered ability timing — LOCKED (v3.18)
+
+**Triggered abilities from any card type (Operators, Processes, Updates, Modules, and Commands with triggered text) fire and resolve immediately when their stated condition occurs**, unless that card explicitly specifies a different timing. Triggered abilities are not ordinary activated actions and do not consume Start, Update, Mod or Process-activation slots merely because their effect resembles one of those actions. **Explicit card text overrides the default action restrictions and timing** only to the extent stated: for example, REPLACE may install a paid Module when reclamation triggers it even after the station's normal Mod action has already been used. It does not grant an additional unrestricted Mod action. Apply any costs, eligibility requirements and limits in the triggered effect's text.
+
+**OPEN:** exact ordering if multiple triggers occur from the same event, how simultaneous triggers interact with pending Commands and response windows, and resolution of chained triggers. The default of immediate resolution does not pre-decide these conflict-resolution details.
+
+### Commands: timing, stack and targeting — LOCKED
 
 - Commands may be played **before, between or after** the four fixed actions, during an opponent's turn, or **in response** to attacks, actions and other Commands, **before damage resolves**.
 - Playing a Command does **not** consume the Activate action (or any of the other fixed actions); number played is limited by hand, cost and card-specific restrictions, not a fixed per-turn cap.
