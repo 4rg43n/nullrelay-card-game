@@ -101,6 +101,8 @@ The station has **one Operator of its own**, separate from its deck, like each p
 
 A Station Operator **remains an Operator** and by default has exactly **one passive and one activated ability**, the same zero card cost and once-per-round activation limit. Its activated ability may be used only during the **Station Phase** (the station's own turn) and does not consume Start, Update, Mod or Process-activation slots. Passives follow the normal passive rules. Being a Station Operator does **not** itself grant additional actions or new timing permissions; any exceptional abilities must be explicitly printed and agreed.
 
+**Narrative design direction:** Keep **NOXENGINE** and **VOIDSYNC** enigmatic and morally ambiguous; do not make either a standard Station Operator or canonically establish either as the villain. Prefer terminal/process-style names that imply mechanical identity (e.g. `REMOVE/REPLACE`, `KILL/ERASE`, `SCAN/TRACE`, `LOCK/DENY`). These are *candidates*, not approved cards, abilities or final names.
+
 **Implementation note:** represent the subtype/eligibility as card data (e.g. `operatorKind: "station"` versus `"player"`), not a mandatory separate software class. Share common Operator state, validation and ability handling; station-only effect implementations may be distinct. **OPEN:** actual Station Operator identity, passive/activated abilities, and whether future scenario variants should have additional subtype-specific constraints.
 
 ### Process cards — LOCKED
