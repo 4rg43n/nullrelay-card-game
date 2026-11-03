@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.12 · 2026-11-02  
+> **Design baseline:** v3.13 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -94,6 +94,14 @@ An existing Module is destroyed/discarded on a change of location ownership. Mod
 Each Operator has exactly **one passive** and **one activated** printed ability. The passive is active while that Operator remains in play. The activated ability can be used **at most once per round**, can have a resource cost, and **does not consume** any of the four fixed turn actions. An eliminated Operator has neither ability active.
 
 **LOCKED (v2.9):** An Operator's activated ability can only be used **during that Operator owner's turn**, at any legal point without consuming a fixed turn action, and at most once per round. It cannot be activated reactively on an opponent's turn. **Commands** are the instants used to intervene outside one's turn or in response to other effects. Operator passive and triggered effects still function whenever their conditions occur, unless their card text restricts them.
+
+### Station Operator subtype — LOCKED (v3.13)
+
+The station has **one Operator of its own**, separate from its deck, like each player. **Station Operator** is a distinct **Operator card subtype / eligibility keyword** reserved for the station; player-controlled factions (human or AI) use regular Player Operators and cannot select Station Operators. Design Station Operator abilities **specifically around station mechanics**—such as escalation, Open locations, reclamation, the station economy or Station Phase—rather than assuming a player Operator's abilities are interchangeable.
+
+A Station Operator **remains an Operator** and by default has exactly **one passive and one activated ability**, the same zero card cost and once-per-round activation limit. Its activated ability may be used only during the **Station Phase** (the station's own turn) and does not consume Start, Update, Mod or Process-activation slots. Passives follow the normal passive rules. Being a Station Operator does **not** itself grant additional actions or new timing permissions; any exceptional abilities must be explicitly printed and agreed.
+
+**Implementation note:** represent the subtype/eligibility as card data (e.g. `operatorKind: "station"` versus `"player"`), not a mandatory separate software class. Share common Operator state, validation and ability handling; station-only effect implementations may be distinct. **OPEN:** actual Station Operator identity, passive/activated abilities, and whether future scenario variants should have additional subtype-specific constraints.
 
 ### Process cards — LOCKED
 
