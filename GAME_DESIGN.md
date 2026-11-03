@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.9 · 2026-11-02  
+> **Design baseline:** v3.10 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -30,6 +30,8 @@ Every location tracks:
 An Injection Point is initially a faction's spawn location. Players can deploy at any **empty owned spawn** location; a captured spawn must be vacated before deployment. Ordinary locations do not automatically serve as deployment sites. **Only Processes occupy the grid.**
 
 **Station spawning — LOCKED (v3.9):** The station's **central Injection Point (4,4)** is its **initial spawn location** on the standard 9×9 board. During its once-per-phase Start action, it may deploy **one** paid Process from hand to that location if empty, or to another **empty spawn location available to the station**. Other explicitly marked spawn locations may become available through station reclamation or card/board effects. **Open does not mean spawn:** ordinary Open corridors are station economic territory but are never automatically legal deployment sites. Open spawn locations are available to the station; player-controlled spawns are not, unless a card explicitly overrides this rule. No free Process appears simply because the station escalates.
+
+**Reclaimed spawn locations — LOCKED (v3.10):** When a station Process occupies a player-controlled **spawn** location at the end of the Station Phase, station reclamation changes its control to **Open** without changing its location kind. That spawn becomes eligible for future station Starts **automatically**, provided it is **empty at deployment time**. If the reclaiming station Process still occupies the location, it cannot spawn another Process there until that Process leaves or is removed. The station may use the reclaimed spawn on a later Station Phase's Start action, not retroactively in the Start slot already completed for the phase in which reclamation occurred. This does not turn normal Open locations into spawn locations.
 
 ### Capturing and eliminating players — LOCKED
 
