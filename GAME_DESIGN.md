@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.10 · 2026-11-02  
+> **Design baseline:** v3.11 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -83,6 +83,8 @@ The central hostile Injection Point **cannot be captured by ordinary location co
 | **Update** | Modify a friendly Process | Only during owner's turn, using the single Update action; one per Process, replacement discards old Update |
 | **Module** | Modify an owned location | Only during owner's turn, using the single Mod action; one per location, replacement discards old Module |
 
+**Station Modules — LOCKED (v3.11):** The station treats **Open** locations as its controlled locations for Module placement. It may install a Module at **any Open location** during its one Mod action each Station Phase, without needing a station Process to occupy the space. It cannot install on player-controlled locations unless explicit card text overrides the rule. When a player captures an Open location, the station's installed Module goes to its Discard, exactly as an opponent's Module would on any control change.
+
 An existing Module is destroyed/discarded on a change of location ownership. Modules persist when Processes leave. Process destruction sends its attached Update to Discard. See section 10 for destinations.
 
 ### Operator abilities — LOCKED
@@ -144,7 +146,7 @@ After the actions: capture the locations occupied by the active player's Process
 
 1. **Start one Process** — optional, at most one legal, paid deployment at an empty eligible station spawn.
 2. **Update one Process** — optional, at most one legal, paid Update to its Process.
-3. **Mod one location** — optional, at most one legal, paid Module to a location eligible for station modification.
+3. **Mod one location** — optional, at most one legal, paid Module on **any Open location** (LOCKED v3.11), whether or not a station Process occupies it. As for players, this uses the single Mod slot for the phase, costs resources, replaces an existing Module if present, and must obey card-specific restrictions. The location must be Open at the time the Module is installed.
 4. **Activate deployed Processes** — each deployed hostile Process may take **one legal activation**, rather than selecting a single Process as a player does. No Process activates more than once in this phase by default.
 
 Actions 1–3 are limited to once per Station Phase, not once *per hostile Process*. Their ordering is fixed, and the station cannot skip forward then return to an earlier slot. Commands remain instant/reactive under normal Command rules, not additional Start/Update/Mod actions. Exact ordering among multiple hostile Process activations remains open.
