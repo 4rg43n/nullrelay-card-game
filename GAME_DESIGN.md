@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.19 · 2026-11-02  
+> **Design baseline:** v3.20 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -196,7 +196,7 @@ Thus the boundaries are **2** and **3** squares inward from the closest outer bo
 
 **Important:** 'play Updates/Modules during your own turn' does **not** imply unlimited plays or free timing in violation of the ordered actions. Their owner-turn permission and their once-per-turn fixed action slots both apply. Commands can be played between those steps and as responses without altering the fixed order.
 
-**OPEN:** detailed timing of phase boundaries, priority passing, same-faction trigger ties, station participation in off-turn trigger priority, chained triggers, start/end hooks and what happens if a player is eliminated mid-round.
+**OPEN:** detailed timing of phase boundaries, priority passing, same-faction trigger ties, chained triggers, start/end hooks and what happens if a player is eliminated mid-round.
 
 ## 8. Process activation, movement and combat — LOCKED
 
@@ -230,9 +230,11 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 
 **Triggered abilities from any card type (Operators, Processes, Updates, Modules, and Commands with triggered text) fire and resolve immediately when their stated condition occurs**, unless that card explicitly specifies a different timing. Triggered abilities are not ordinary activated actions and do not consume Start, Update, Mod or Process-activation slots merely because their effect resembles one of those actions. **Explicit card text overrides the default action restrictions and timing** only to the extent stated: for example, REPLACE may install a paid Module when reclamation triggers it even after the station's normal Mod action has already been used. It does not grant an additional unrestricted Mod action. Apply any costs, eligibility requirements and limits in the triggered effect's text.
 
-**LOCKED (v3.19) — simultaneous triggers across factions:** When multiple abilities trigger from the same event, resolve them **automatically**, one at a time, in faction priority order; no player chooses the faction ordering. The **active faction resolves first**. During a player turn, the remaining player factions follow the **fixed initiative order**, wrapping around after the active player. During the Station Phase, the station is active and resolves its triggers first; player factions then follow their established initiative order. Each trigger completes before the next is processed. This is a triggered-effect ordering rule, **not** a change to the last-in-first-out Command response stack.
+**LOCKED (v3.19) — simultaneous triggers across factions:** When multiple abilities trigger from the same event, resolve them **automatically**, one at a time, in faction priority order; no player chooses the faction ordering. The **active faction resolves first**. During a player turn, the remaining player factions follow the **fixed initiative order**, wrapping around after the active player, and **the station resolves last**. During the Station Phase, the station is active and resolves its triggers first; player factions then follow their established initiative order. Each trigger completes before the next is processed. This is a triggered-effect ordering rule, **not** a change to the last-in-first-out Command response stack.
 
-**OPEN:** ordering of multiple simultaneous triggers controlled by the **same faction**, the station's place in trigger priority during a **player** turn (it is not part of randomized player initiative), interactions with pending Commands/response windows, and resolution of chained or newly created triggers. Do not silently invent these details.
+**LOCKED (v3.20):** The station always resolves its simultaneous triggered abilities **last during any player's turn**, after all player factions in wrapped initiative order. During the Station Phase, the station resolves **first**, followed by players in fixed initiative order.
+
+**OPEN:** ordering of multiple simultaneous triggers controlled by the **same faction**, interactions with pending Commands/response windows, and resolution of chained or newly created triggers. Do not silently invent these details.
 
 ### Commands: timing, stack and targeting — LOCKED
 
@@ -261,7 +263,7 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 Do **not** convert these to rules without explicit design agreement:
 1. Station behavior: health, Process AI, card/resource-driven deployment, third hand-size-7 escalation trigger, exact round-start timing, order and sequencing of station Process activations, escalation trigger timing, attack logic, damage effects and precise destruction sequence; final income scaling beyond its locked 2-resource floor.
 2. Boss contribution and scoring tie-breaks; interaction with eliminated contributors and overkill.
-3. Exact multiplayer priority/Command stack response windows, same-faction trigger ties, station priority on player turns, and chained trigger ordering.
+3. Exact multiplayer priority/Command stack response windows, same-faction trigger ties and chained trigger ordering.
 4. Line of sight and range on boards with removed/added connections.
 5. Additional spawn locations, and any board obstacles beyond the five initial Injection Points.
 6. Full Operator/Process/Command/Update/Module card catalog, costs, icons and keyword glossary.
