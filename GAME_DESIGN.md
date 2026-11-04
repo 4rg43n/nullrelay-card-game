@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.20 · 2026-11-02  
+> **Design baseline:** v3.21 · 2026-11-02  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -196,7 +196,7 @@ Thus the boundaries are **2** and **3** squares inward from the closest outer bo
 
 **Important:** 'play Updates/Modules during your own turn' does **not** imply unlimited plays or free timing in violation of the ordered actions. Their owner-turn permission and their once-per-turn fixed action slots both apply. Commands can be played between those steps and as responses without altering the fixed order.
 
-**OPEN:** detailed timing of phase boundaries, priority passing, same-faction trigger ties, chained triggers, start/end hooks and what happens if a player is eliminated mid-round.
+**OPEN:** detailed timing of phase boundaries, priority passing, same-location/off-board trigger ties, chained triggers, start/end hooks and what happens if a player is eliminated mid-round.
 
 ## 8. Process activation, movement and combat — LOCKED
 
@@ -234,7 +234,9 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 
 **LOCKED (v3.20):** The station always resolves its simultaneous triggered abilities **last during any player's turn**, after all player factions in wrapped initiative order. During the Station Phase, the station resolves **first**, followed by players in fixed initiative order.
 
-**OPEN:** ordering of multiple simultaneous triggers controlled by the **same faction**, interactions with pending Commands/response windows, and resolution of chained or newly created triggers. Do not silently invent these details.
+**LOCKED (v3.21) — same-faction board order:** When two or more board-associated abilities controlled by the same faction trigger from the same event, resolve them in **board order: top-left to bottom-right**, using ascending row, then ascending column (zero-based on the standard board). For a Process or its attached Update, use that Process's location; for a Module, use its installed location. Apply this ordering *within* the faction's slot in the established cross-faction priority. No player chooses between different board locations.
+
+**OPEN:** ordering when multiple triggers belong to **the same board location**, when an Operator or other off-board source triggers simultaneously with board-based abilities, interactions with pending Commands/response windows, and resolution of chained or newly created triggers. Do not silently invent these details.
 
 ### Commands: timing, stack and targeting — LOCKED
 
@@ -263,7 +265,7 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 Do **not** convert these to rules without explicit design agreement:
 1. Station behavior: health, Process AI, card/resource-driven deployment, third hand-size-7 escalation trigger, exact round-start timing, order and sequencing of station Process activations, escalation trigger timing, attack logic, damage effects and precise destruction sequence; final income scaling beyond its locked 2-resource floor.
 2. Boss contribution and scoring tie-breaks; interaction with eliminated contributors and overkill.
-3. Exact multiplayer priority/Command stack response windows, same-faction trigger ties and chained trigger ordering.
+3. Exact multiplayer priority/Command stack response windows, same-location/off-board trigger ties and chained trigger ordering.
 4. Line of sight and range on boards with removed/added connections.
 5. Additional spawn locations, and any board obstacles beyond the five initial Injection Points.
 6. Full Operator/Process/Command/Update/Module card catalog, costs, icons and keyword glossary.
