@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.24 · 2026-11-05  
+> **Design baseline:** v3.25 · 2026-11-05  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -87,7 +87,9 @@ The central hostile Injection Point **cannot be captured by ordinary location co
 
 **Station Modules — LOCKED (v3.11):** The station treats **Open** locations as its controlled locations for Module placement. It may install a Module at **any Open location** during its one Mod action each Station Phase, without needing a station Process to occupy the space. It cannot install on player-controlled locations unless explicit card text overrides the rule. When a player captures an Open location, the station's installed Module goes to its Discard, exactly as an opponent's Module would on any control change.
 
-**LOCKED (v3.24) — same-name non-stacking:** Effects from multiple **Updates** or **Modules** with the **same card name** do **not stack on the same affected target**. Duplicate copies cannot multiply a numeric bonus, penalty, counter or repeated continuous benefit on one target merely by existing simultaneously. This is distinct from the existing attachment limits (one Update per Process; one Module per location), which remain unchanged. The 3-copies-per-deck limit remains unchanged: same-named cards may still be included and played legally at different locations/Processes. **OPEN:** if overlapping area effects from separate locations affect the same Process, specify which copy supplies the effect (e.g., only one copy, highest magnitude) and how to handle separately triggered duplicate-name effects; do not invent a global one-copy-on-board restriction.
+**LOCKED (v3.24) — same-name non-stacking:** Effects from multiple **Updates** or **Modules** with the **same card name** do **not stack on the same affected target**. Duplicate copies cannot multiply a numeric bonus, penalty, counter or repeated continuous benefit on one target merely by existing simultaneously. This is distinct from the existing attachment limits (one Update per Process; one Module per location), which remain unchanged. The 3-copies-per-deck limit remains unchanged: same-named cards may still be included and played legally at different locations/Processes. **LOCKED (v3.25) — overlapping same-named abilities:** If multiple applicable sources grant an ability with the **same name** to one target, apply that named ability's **continuous benefit only once**, not once per source. Example: two `DEFENSE GRID` Modules each provide +1 Integrity to a Process within range 2; if both cover it, the Process receives **+1 total, not +2**. If one source stops applying, the other continues supplying the single benefit while eligible. No copy gains exclusive ownership of the effect; eligibility is recomputed from all active sources. This clarification applies to overlapping same-named ability effects, not only copies of the same physical card. Do **not** invent a global one-copy-per-board restriction.
+
+**OPEN:** how duplicate-name *triggered* abilities from different source cards interact with this continuous-effect non-stacking rule; whether same-named abilities with different printed numerical values require an explicit precedence rule.
 
 An existing Module is destroyed/discarded on a change of location ownership. Modules persist when Processes leave. Process destruction sends its attached Update to Discard. See section 10 for destinations.
 
@@ -198,7 +200,7 @@ Thus the boundaries are **2** and **3** squares inward from the closest outer bo
 
 **Important:** 'play Updates/Modules during your own turn' does **not** imply unlimited plays or free timing in violation of the ordered actions. Their owner-turn permission and their once-per-turn fixed action slots both apply. Commands can be played between those steps and as responses without altering the fixed order.
 
-**OPEN:** detailed timing of phase boundaries, priority passing, residual same-location/off-board trigger ties, overlapping same-name effects, start/end hooks and what happens if a player is eliminated mid-round.
+**OPEN:** detailed timing of phase boundaries, priority passing, residual same-location/off-board trigger ties, duplicate-name triggered effects, start/end hooks and what happens if a player is eliminated mid-round.
 
 ## 8. Process activation, movement and combat — LOCKED
 
@@ -244,7 +246,7 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 
 **LOCKED (v3.24) — per-event trigger safeguard:** For a given **original event**, the **same triggered ability instance may fire at most once** throughout the full chain of effects caused by that event. Track the original event's identity across recursively generated triggers; an ability that has already fired for that event cannot fire again for it, preventing ping-pong loops between abilities. This restriction is **per original event**, not once per turn/round: the ability may trigger again from a genuinely independent later event. Distinct instances of the same-named ability remain distinct for loop tracking, subject to the separate same-name non-stacking rule for Updates/Modules.
 
-**OPEN:** tie-break if multiple *other* effects occupy the same ordering category/location, ordering of off-board effects other than the Operator, exact interaction with pending Commands/response windows, and effect precedence for overlapping same-name area effects.
+**OPEN:** tie-break if multiple *other* effects occupy the same ordering category/location, ordering of off-board effects other than the Operator, exact interaction with pending Commands/response windows, and treatment of same-named triggered effects or differing printed magnitudes.
 
 ### Commands: timing, stack and targeting — LOCKED
 
@@ -273,7 +275,7 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 Do **not** convert these to rules without explicit design agreement:
 1. Station behavior: health, Process AI, card/resource-driven deployment, third hand-size-7 escalation trigger, exact round-start timing, order and sequencing of station Process activations, escalation trigger timing, attack logic, damage effects and precise destruction sequence; final income scaling beyond its locked 2-resource floor.
 2. Boss contribution and scoring tie-breaks; interaction with eliminated contributors and overkill.
-3. Exact multiplayer priority/Command stack response windows, remaining same-location/off-board trigger ties, overlapping same-name effects, and trigger/Command timing interactions.
+3. Exact multiplayer priority/Command stack response windows, remaining same-location/off-board trigger ties, duplicate-name triggered effects, and trigger/Command timing interactions.
 4. Line of sight and range on boards with removed/added connections.
 5. Additional spawn locations, and any board obstacles beyond the five initial Injection Points.
 6. Full Operator/Process/Command/Update/Module card catalog, costs, icons and keyword glossary.
