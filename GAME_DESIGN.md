@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.26 · 2026-11-05  
+> **Design baseline:** v3.27 · 2026-11-05  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -91,7 +91,9 @@ The central hostile Injection Point **cannot be captured by ordinary location co
 
 **LOCKED (v3.26) — same-named triggered abilities:** When multiple eligible sources of a **same-named triggered ability** affect the **same target** in response to the **same event**, that named ability **triggers and resolves only once for that affected target**, rather than once per source. Example: if two `COUNTERMEASURE` Modules cover a Process and both say 'Whenever a friendly Process takes damage, deal 1 damage to the attacker', one damage event to that Process produces **one COUNTERMEASURE retaliation for 1 damage**, not two. The same named ability can still trigger separately for distinct targets or genuinely separate events, subject to the existing once-per-original-event safeguard. Multiple cards may still remain installed; they simply do not multiply their shared ability's effect on one target. This rule applies to same-named abilities, even on differently named source cards.
 
-**OPEN:** if same-named abilities have different printed numerical values or other differing details, define which effect version wins; do not infer additive stacking.
+**LOCKED (v3.27) — strongest value for same-named abilities:** When multiple applicable sources give the same target the **same named ability at different numeric strengths**, use **only the highest applicable value**, rather than adding values. This applies to both continuous benefits and triggered effects. Example: `COUNTERMEASURE 1` and `COUNTERMEASURE 2` covering a single Process yield **one COUNTERMEASURE trigger dealing 2 damage**, not 3, for one qualifying damage event. If the stronger source stops applying, recompute using the strongest remaining eligible source. A numeric rank following an ability's name describes its strength, not a distinct ability name for stacking purposes.
+
+**OPEN:** same-named abilities with genuinely different nonnumeric wording or incomparable effects; this highest-value rule does not decide which different effect text wins.
 
 An existing Module is destroyed/discarded on a change of location ownership. Modules persist when Processes leave. Process destruction sends its attached Update to Discard. See section 10 for destinations.
 
@@ -248,7 +250,7 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 
 **LOCKED (v3.24) — per-event trigger safeguard:** For a given **original event**, the **same triggered ability instance may fire at most once** throughout the full chain of effects caused by that event. Track the original event's identity across recursively generated triggers; an ability that has already fired for that event cannot fire again for it, preventing ping-pong loops between abilities. This restriction is **per original event**, not once per turn/round: the ability may trigger again from a genuinely independent later event. Distinct instances of the same-named ability remain distinct for loop tracking, subject to the separate same-name non-stacking rule for Updates/Modules.
 
-**OPEN:** tie-break if multiple *other* effects occupy the same ordering category/location, ordering of off-board effects other than the Operator, exact interaction with pending Commands/response windows, and precedence for same-named abilities with differing printed magnitudes.
+**OPEN:** tie-break if multiple *other* effects occupy the same ordering category/location, ordering of off-board effects other than the Operator, exact interaction with pending Commands/response windows, and precedence for same-named abilities with incomparable effect text.
 
 ### Commands: timing, stack and targeting — LOCKED
 
@@ -277,7 +279,7 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 Do **not** convert these to rules without explicit design agreement:
 1. Station behavior: health, Process AI, card/resource-driven deployment, third hand-size-7 escalation trigger, exact round-start timing, order and sequencing of station Process activations, escalation trigger timing, attack logic, damage effects and precise destruction sequence; final income scaling beyond its locked 2-resource floor.
 2. Boss contribution and scoring tie-breaks; interaction with eliminated contributors and overkill.
-3. Exact multiplayer priority/Command stack response windows, remaining same-location/off-board trigger ties, differing-magnitude same-name effects, and trigger/Command timing interactions.
+3. Exact multiplayer priority/Command stack response windows, remaining same-location/off-board trigger ties, incomparable same-name effect text, and trigger/Command timing interactions.
 4. Line of sight and range on boards with removed/added connections.
 5. Additional spawn locations, and any board obstacles beyond the five initial Injection Points.
 6. Full Operator/Process/Command/Update/Module card catalog, costs, icons and keyword glossary.
