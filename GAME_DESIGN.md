@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.22 · 2026-11-03  
+> **Design baseline:** v3.23 · 2026-11-05  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -196,7 +196,7 @@ Thus the boundaries are **2** and **3** squares inward from the closest outer bo
 
 **Important:** 'play Updates/Modules during your own turn' does **not** imply unlimited plays or free timing in violation of the ordered actions. Their owner-turn permission and their once-per-turn fixed action slots both apply. Commands can be played between those steps and as responses without altering the fixed order.
 
-**OPEN:** detailed timing of phase boundaries, priority passing, residual same-location/off-board trigger ties, chained triggers, start/end hooks and what happens if a player is eliminated mid-round.
+**OPEN:** detailed timing of phase boundaries, priority passing, residual same-location/off-board trigger ties, cyclic trigger chains, start/end hooks and what happens if a player is eliminated mid-round.
 
 ## 8. Process activation, movement and combat — LOCKED
 
@@ -238,7 +238,9 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 
 **LOCKED (v3.22) — same-location and Operator ordering:** Within one faction, for simultaneous triggers associated with the same board location, resolve the **Process's printed trigger first**, then its attached **Update trigger**, then **other location-associated effects** (including an installed Module). Apply this tie-break at each location while continuing top-left-to-bottom-right board ordering. After **all board-associated triggers of that faction** have resolved, resolve that faction's **off-board Operator trigger(s)**. These rules apply inside the existing active-faction/initiative ordering and do not override the Command response stack.
 
-**OPEN:** tie-break if multiple *other* effects occupy the same ordering category/location, ordering of off-board effects other than the Operator, interactions with pending Commands/response windows, and chained or newly created triggers. Do not silently invent these details.
+**LOCKED (v3.23) — chained triggers:** If resolving a triggered ability causes one or more further abilities to trigger, resolve the **newly caused trigger(s) immediately**, before returning to the other pending triggers from the original event. Apply the established faction, board, and same-location priority rules when several new triggers arise simultaneously. This applies recursively: a trigger caused by a triggered effect interrupts the remaining pending triggers until that chain completes. Then resume the original pending triggers in their established order. Example: Process A's trigger deals damage that triggers Process B's defensive effect; resolve B's response before processing other triggers from A's original event. This is a trigger-resolution rule and does **not** replace the separate LIFO Command response stack.
+
+**OPEN:** tie-break if multiple *other* effects occupy the same ordering category/location, ordering of off-board effects other than the Operator, exact interaction with pending Commands/response windows, and how to handle infinite or cyclic trigger chains. Do not silently invent these details.
 
 ### Commands: timing, stack and targeting — LOCKED
 
@@ -267,7 +269,7 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 Do **not** convert these to rules without explicit design agreement:
 1. Station behavior: health, Process AI, card/resource-driven deployment, third hand-size-7 escalation trigger, exact round-start timing, order and sequencing of station Process activations, escalation trigger timing, attack logic, damage effects and precise destruction sequence; final income scaling beyond its locked 2-resource floor.
 2. Boss contribution and scoring tie-breaks; interaction with eliminated contributors and overkill.
-3. Exact multiplayer priority/Command stack response windows, remaining same-location/off-board trigger ties and chained trigger ordering.
+3. Exact multiplayer priority/Command stack response windows, remaining same-location/off-board trigger ties, cyclic chains, and trigger/Command timing interactions.
 4. Line of sight and range on boards with removed/added connections.
 5. Additional spawn locations, and any board obstacles beyond the five initial Injection Points.
 6. Full Operator/Process/Command/Update/Module card catalog, costs, icons and keyword glossary.
