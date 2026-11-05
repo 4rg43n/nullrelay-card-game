@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.27 · 2026-11-05  
+> **Design baseline:** v3.28 · 2026-11-05  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -93,7 +93,9 @@ The central hostile Injection Point **cannot be captured by ordinary location co
 
 **LOCKED (v3.27) — strongest value for same-named abilities:** When multiple applicable sources give the same target the **same named ability at different numeric strengths**, use **only the highest applicable value**, rather than adding values. This applies to both continuous benefits and triggered effects. Example: `COUNTERMEASURE 1` and `COUNTERMEASURE 2` covering a single Process yield **one COUNTERMEASURE trigger dealing 2 damage**, not 3, for one qualifying damage event. If the stronger source stops applying, recompute using the strongest remaining eligible source. A numeric rank following an ability's name describes its strength, not a distinct ability name for stacking purposes.
 
-**OPEN:** same-named abilities with genuinely different nonnumeric wording or incomparable effects; this highest-value rule does not decide which different effect text wins.
+**LOCKED (v3.28) — different names stack:** **Differently named abilities apply cumulatively by default**, even if they affect the same stat or target. For example, `ARMOR 2` and `FORTIFY 1` both increase the same Process's stat if their printed effects say so, for a total benefit of +3. Explicit card text can prohibit or modify such stacking; obey that text. Resolve distinct triggered abilities according to the existing timing and trigger-order rules. The same-name highest-value/non-stacking restrictions remain unchanged.
+
+**OPEN:** same-named abilities with genuinely different nonnumeric wording or incomparable effects; the highest-value rule does not decide which different effect text wins.
 
 An existing Module is destroyed/discarded on a change of location ownership. Modules persist when Processes leave. Process destruction sends its attached Update to Discard. See section 10 for destinations.
 
@@ -204,7 +206,7 @@ Thus the boundaries are **2** and **3** squares inward from the closest outer bo
 
 **Important:** 'play Updates/Modules during your own turn' does **not** imply unlimited plays or free timing in violation of the ordered actions. Their owner-turn permission and their once-per-turn fixed action slots both apply. Commands can be played between those steps and as responses without altering the fixed order.
 
-**OPEN:** detailed timing of phase boundaries, priority passing, residual same-location/off-board trigger ties, different-valued same-name abilities, start/end hooks and what happens if a player is eliminated mid-round.
+**OPEN:** detailed timing of phase boundaries, priority passing, residual same-location/off-board trigger ties, incomparable same-name abilities, start/end hooks and what happens if a player is eliminated mid-round.
 
 ## 8. Process activation, movement and combat — LOCKED
 
