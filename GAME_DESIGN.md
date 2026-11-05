@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.29 · 2026-11-05  
+> **Design baseline:** v3.30 · 2026-11-05  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -300,6 +300,104 @@ Do **not** convert these to rules without explicit design agreement:
 - A new Process may be Updated in the second fixed action of the same turn and Activated in the fourth.
 - A response Command can stop a pending Command; global targeting is valid unless printed text restricts it.
 - If two Processes kill one another on melee entry, the destination remains empty and its prior ownership remains.
+
+
+## 13. Bulk rules review — LOCKED (v3.30, 2026-11-05)
+
+The owner approved **68 of 69** proposed rule cases together. Rule **S04 is explicitly excluded and remains OPEN**; do not infer its behavior from any other item in this batch. These cases supplement the earlier locked decisions and should be implemented/tested together. Card text can override defaults only as specified.
+
+### Stats and damage
+
+- **S01 — Apply all signed stat modifiers to the printed/base stat after same-name deduplication.**
+- **S02 — Clamp effective stats to a minimum of 0 unless card text explicitly permits a lower value.**
+- **S03 — No universal maximum exists for Attack, Range, or Integrity.**
+- **S05 — Track persistent damage as accumulated damage rather than mutable current-health totals.**
+- **S06 — Healing removes accumulated damage down to a minimum of 0; it does not increase maximum Integrity.**
+- **S07 — Excess damage does not spill onto another Process unless specified by an effect.**
+- **S08 — Damage reduced to 0 counts as no damage dealt and does not trigger 'takes damage' effects.**
+- **S09 — For scoring, damage to a target with limited remaining Integrity only counts up to that actual remaining Integrity (no overkill scoring).**
+
+### Combat and movement
+
+- **C01 — An attack with effective Attack 0 deals 0 damage but still counts as an attack for attack-based triggers.**
+- **C02 — Determine attack damage from effective Attack at resolution.**
+- **C03 — Retaliation uses the defender's current effective Attack and Range.**
+- **C04 — Determine both parties' simultaneous combat damage before destroying either.**
+- **C05 — After destruction, ordinary healing cannot save a Process; explicit prevention/resurrection can override.**
+- **C06 — A Process cannot attack itself without explicit permission.**
+- **C07 — Ranged attack targets must be within graph distance; Processes between attacker and target do not obstruct baseline shots.**
+- **C08 — Removed board edges prevent traversal and do not count as adjacency; range follows the current connection graph.**
+- **C09 — An invalid movement declaration does not use an action; a legal melee entry attempt uses the Move action even if displacement fails.**
+- **C10 — Entering a friendly-occupied location is illegal; friendly position swaps require explicit card text.**
+- **C11 — Forced movement ignores Slow/Normal/Fast movement cooldowns but still requires a legal destination unless overridden.**
+- **C12 — Forced or effect-driven movement can cause entry/location triggers but never grants another activation by itself.**
+
+### Abilities and event timing
+
+- **A01 — Give every event a stable identity so chained triggers can obey the once-per-original-event safeguard.**
+- **A02 — A triggered ability that destroys its own source during resolution still completes unless its text requires the source to remain in play.**
+- **A03 — Trigger sources must be active when their event occurs, except when explicitly active from another zone.**
+- **A04 — Recalculate continuous effects when sources, ownership, placement, attachments, or relevant stats change.**
+- **A05 — For tied simultaneous triggers in the same priority category and board location, use a stable card ID to order them.**
+- **A06 — Resolve as much of an effect as remains possible unless explicitly all-or-nothing.**
+- **A07 — An ability with an illegal mandatory target cannot be declared; if a target later becomes illegal, its targeted portion fails.**
+- **A08 — Optional triggers can be declined; they still count as having triggered for that original event.**
+- **A09 — Same-named abilities with incompatible nonnumeric text require distinct IDs or explicit precedence, not silent combination.**
+- **A10 — Discard a destroyed Process's attached Update as part of destruction; apply subsequent triggers through normal event timing.**
+
+### Commands and responses
+
+- **R01 — Respond to a Command with Commands until all eligible factions pass consecutively.**
+- **R02 — After the top Command resolves, reopen responses before resolving the next pending Command.**
+- **R03 — Response priority: active faction first, then wrapped player initiative; station last on player turns and first in Station Phase.**
+- **R04 — Pay Command costs on declaration; failed/canceled effects do not refund costs.**
+- **R05 — Choose Command targets when played, then recheck legality at resolution.**
+- **R06 — Commands cannot undo completed events retroactively; prevention must resolve before the event.**
+- **R07 — Stat changes affect unresolved attacks, not damage already applied.**
+- **R08 — Triggered chains produced during Command resolution finish before moving to the next pending Command.**
+
+### Cards and attachments
+
+- **D01 — Card names and ability names are separate identifiers; different cards can grant the same named ability.**
+- **D02 — A disabled Update still occupies the Process's one Update slot.**
+- **D03 — On replacement, discard the previous Update/Module before the new card becomes active.**
+- **D04 — On Process controller change, its Update stays attached and changes controller with it unless card text says otherwise.**
+- **D05 — A Module functions only on a valid location; remove it if its location becomes ineligible.**
+- **D06 — Attachment effects stop immediately when that attachment leaves play.**
+- **D07 — Explicit extra Start/Update/Mod/Activate effects override ordinary action counts only to their printed extent.**
+- **D08 — Overlapping same-named abilities use the highest currently eligible strength; fall back to the next strongest when necessary.**
+- **D09 — Same printed card name with different artwork is the same card for deckbuilding and stacking.**
+- **D10 — Card text overrides only directly contradictory general rules, leaving all other general rules intact.**
+
+### Turns, resources and board
+
+- **T01 — Optional action slots may be skipped, but earlier slots cannot be revisited after progressing.**
+- **T02 — A faction without legal actions can end its turn; normal end-of-turn triggers/scoring still happen.**
+- **T03 — Pay costs fully before declaring legal actions; resource totals cannot become negative.**
+- **T04 — Round-start income uses the board state at the beginning of the round and is never recalculated retroactively.**
+- **T05 — A player eliminated before their turn skips that turn and gains no additional income.**
+- **T06 — Apply ownership changes before recalculating Module legality and continuous effects.**
+- **T07 — A location cannot have two owners; the most recent legal capture controls it.**
+- **T08 — A Process removed before owner end-turn capture cannot capture a location.**
+- **T09 — On elimination, deactivate Operator and remove deployed cards immediately, even mid-opponent-turn.**
+- **T10 — Elimination never reverses completed effects or already awarded points.**
+
+### Station, escalation and completion
+
+- **E01 — Check escalation immediately when a player Process enters a qualifying cell, including forced movement.**
+- **E02 — Escalation changes the station's subsequent round-start draw target, not its present hand immediately.**
+- **E03 — The station chooses activation order for deployed station Processes; each activates at most once per Station Phase.**
+- **E04 — Station uses standard card legality and costs except where its cards explicitly override.**
+- **E05 — When unable to pay for legal actions, station can pass instead of gaining free substitute actions.**
+- **E06 — Station reclaims only cells occupied by surviving station Processes at end of Station Phase.**
+- **E07 — Once the central enemy is defeated, finish the damage event and immediate trigger chain, then end before further normal actions.**
+- **E08 — Final score counts earned points and explicitly defined endgame bonuses; spare cards/resources confer no points automatically.**
+- **E09 — Tie surviving players in final score at equal rank unless specific card/scenario tie-break applies.**
+- **E10 — Being the sole remaining player does not end the game; defeating the station is still required.**
+
+### Exception held for review — OPEN (S04)
+
+**S04 — Interaction between modified maximum Integrity and existing accumulated damage.** The proposed wording ('Integrity modifiers alter maximum Integrity; current damage remains unchanged; a Process dies when damage reaches/exceeds modified maximum Integrity') was **not approved**. Pending owner decision, do not lock or assume how damage, current health, or death behaves when an Integrity modifier is gained or lost. S05 (damage stored as accumulated damage), S06 (healing removes accumulated damage), and S03 (no universal maximum Integrity) **are** approved; they do not settle S04's modifier edge case.
 
 ---
 
