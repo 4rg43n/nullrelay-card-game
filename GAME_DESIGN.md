@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.28 · 2026-11-05  
+> **Design baseline:** v3.29 · 2026-11-05  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -92,6 +92,8 @@ The central hostile Injection Point **cannot be captured by ordinary location co
 **LOCKED (v3.26) — same-named triggered abilities:** When multiple eligible sources of a **same-named triggered ability** affect the **same target** in response to the **same event**, that named ability **triggers and resolves only once for that affected target**, rather than once per source. Example: if two `COUNTERMEASURE` Modules cover a Process and both say 'Whenever a friendly Process takes damage, deal 1 damage to the attacker', one damage event to that Process produces **one COUNTERMEASURE retaliation for 1 damage**, not two. The same named ability can still trigger separately for distinct targets or genuinely separate events, subject to the existing once-per-original-event safeguard. Multiple cards may still remain installed; they simply do not multiply their shared ability's effect on one target. This rule applies to same-named abilities, even on differently named source cards.
 
 **LOCKED (v3.27) — strongest value for same-named abilities:** When multiple applicable sources give the same target the **same named ability at different numeric strengths**, use **only the highest applicable value**, rather than adding values. This applies to both continuous benefits and triggered effects. Example: `COUNTERMEASURE 1` and `COUNTERMEASURE 2` covering a single Process yield **one COUNTERMEASURE trigger dealing 2 damage**, not 3, for one qualifying damage event. If the stronger source stops applying, recompute using the strongest remaining eligible source. A numeric rank following an ability's name describes its strength, not a distinct ability name for stacking purposes.
+
+**LOCKED (v3.29) — arithmetic modifiers and stat floor:** When several legally applicable differently named effects modify a numeric stat, add their signed bonuses and penalties to the printed/base value; e.g., printed Attack 3 + `POWER BOOST` 2 − `WEAKEN` 1 = **effective Attack 4**. Unless explicit card text permits an exception, the final effective value of a stat **cannot fall below 0**. Continue respecting same-named non-stacking and highest-strength rules before summing distinct effects. This does not by itself define maximum stat ceilings or treatment of current damage when maximum Integrity changes.
 
 **LOCKED (v3.28) — different names stack:** **Differently named abilities apply cumulatively by default**, even if they affect the same stat or target. For example, `ARMOR 2` and `FORTIFY 1` both increase the same Process's stat if their printed effects say so, for a total benefit of +3. Explicit card text can prohibit or modify such stacking; obey that text. Resolve distinct triggered abilities according to the existing timing and trigger-order rules. The same-name highest-value/non-stacking restrictions remain unchanged.
 
