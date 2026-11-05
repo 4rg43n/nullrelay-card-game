@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.30 · 2026-11-05  
+> **Design baseline:** v3.31 · 2026-11-05  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -128,7 +128,7 @@ A Station Operator **remains an Operator** and by default has exactly **one pass
 
 Printed stats: **Cost, Integrity (health), Attack (one damage number), Range, Movement type** (Slow/Normal/Fast). There is **no default Defense stat**. One printed ability per Process (passive, triggered or activated); its one Update may add a second ability, for **two max**.
 
-Damage is **persistent between rounds**, represented by counters against Integrity. Repair/heal cannot exceed printed maximum Integrity unless explicit card text says otherwise.
+Damage is **persistent between rounds**, represented by counters against Integrity. Repair/heal removes accumulated damage (minimum 0) and cannot raise remaining Integrity beyond effective maximum Integrity. Maximum-Integrity changes follow S04 in §13.
 
 ## 6. Deck, hand and card zones — LOCKED
 
@@ -304,7 +304,7 @@ Do **not** convert these to rules without explicit design agreement:
 
 ## 13. Bulk rules review — LOCKED (v3.30, 2026-11-05)
 
-The owner approved **68 of 69** proposed rule cases together. Rule **S04 is explicitly excluded and remains OPEN**; do not infer its behavior from any other item in this batch. These cases supplement the earlier locked decisions and should be implemented/tested together. Card text can override defaults only as specified.
+The owner approved **68 rules together in v3.30** and finalized the remaining **S04 in v3.31**; **all 69 cases are now LOCKED**. These cases supplement the earlier locked decisions and should be implemented/tested together. Card text can override defaults only as specified.
 
 ### Stats and damage
 
@@ -395,9 +395,12 @@ The owner approved **68 of 69** proposed rule cases together. Rule **S04 is expl
 - **E09 — Tie surviving players in final score at equal rank unless specific card/scenario tie-break applies.**
 - **E10 — Being the sole remaining player does not end the game; defeating the station is still required.**
 
-### Exception held for review — OPEN (S04)
+### S04 — Maximum Integrity bonuses and lethal reductions — LOCKED (v3.31)
 
-**S04 — Interaction between modified maximum Integrity and existing accumulated damage.** The proposed wording ('Integrity modifiers alter maximum Integrity; current damage remains unchanged; a Process dies when damage reaches/exceeds modified maximum Integrity') was **not approved**. Pending owner decision, do not lock or assume how damage, current health, or death behaves when an Integrity modifier is gained or lost. S05 (damage stored as accumulated damage), S06 (healing removes accumulated damage), and S03 (no universal maximum Integrity) **are** approved; they do not settle S04's modifier edge case.
+- **A bonus increasing maximum Integrity by N also removes N accumulated damage**, with damage floored at **0**. This damage reduction is part of the maximum-Integrity increase effect, not an additional action. Example: a Process at maximum Integrity 5 with 2 accumulated damage gains +2 maximum Integrity; its new maximum is **7** and its damage drops to **0** (remaining Integrity 7). A bonus never creates negative damage or heals above the new maximum.
+- **A decrease in maximum Integrity does not itself add damage.** Once the entire Integrity-changing effect finishes resolving, compare the Process's accumulated damage with its **resulting effective maximum Integrity**. If accumulated damage is **greater than or equal to** the resulting maximum, destroy the Process. Do not destroy it midway through a multi-step effect before its final state is established. Example: maximum Integrity falls from 5 to 2 while accumulated damage is 2 → the Process dies after the effect resolves.
+- **Distinct from proportional scaling:** 'same ratio' here is implemented as the owner's explicit **one-for-one reduction of accumulated damage on positive maximum-Integrity bonuses**, not as preserving an exact mathematical health percentage. This is the canonical numeric rule.
+- If an ongoing maximum-Integrity bonus is later removed, the maximum falls accordingly, but **do not restore damage previously removed when the bonus was gained**; check for death only against the resulting maximum after the removal effect. Explicit card effects may override this default.
 
 ---
 
