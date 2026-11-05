@@ -112,3 +112,17 @@ See **GAME_DESIGN.md §11**, especially central enemy behavior/stats, contributi
 - Use feature branches/PRs for substantial work when practical; keep commits reviewable.
 - Do not add copyrighted card art, names or other third-party assets without permission.
 - Avoid exposing secrets, personal identifiers or credentials in code, sample data, logs or docs.
+
+## Bulk rules review implementation contract — LOCKED (v3.30)
+
+The owner approved **68 of 69** bulk cases; the complete normative wording and IDs are in **GAME_DESIGN.md §13**. Implement all approved cases and write tests against their IDs. The **only excluded case is S04**, which remains **OPEN**: modified maximum Integrity versus pre-existing accumulated damage. Do not infer S04 from S03/S05/S06. In particular, do not silently implement the rejected-for-now proposal that changing maximum Integrity leaves accumulated damage unchanged and kills at the adjusted maximum.
+
+- **Stats and damage:** S01, S02, S03, S05, S06, S07, S08, S09.
+- **Combat and movement:** C01, C02, C03, C04, C05, C06, C07, C08, C09, C10, C11, C12.
+- **Abilities and event timing:** A01, A02, A03, A04, A05, A06, A07, A08, A09, A10.
+- **Commands and responses:** R01, R02, R03, R04, R05, R06, R07, R08.
+- **Cards and attachments:** D01, D02, D03, D04, D05, D06, D07, D08, D09, D10.
+- **Turns, resources and board:** T01, T02, T03, T04, T05, T06, T07, T08, T09, T10.
+- **Station, escalation and completion:** E01, E02, E03, E04, E05, E06, E07, E08, E09, E10.
+
+**Implementation implications:** Use stable event IDs and stable card IDs, a response-priority loop (including station priority), dynamic effective-stat computation, same-name ability deduplication, target legality rechecks and full cancellation/no-refund handling. Resolve after-action and destruction hooks consistently. All 68 cases are approved defaults even where earlier text listed the question as OPEN; §13 supersedes earlier OPEN flags about those specific topics. Keep unrelated OPEN questions open, especially S04.
