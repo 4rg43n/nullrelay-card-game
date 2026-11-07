@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.31 · 2026-11-05  
+> **Design baseline:** v3.32 · 2026-11-05  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -401,6 +401,84 @@ The owner approved **68 rules together in v3.30** and finalized the remaining **
 - **A decrease in maximum Integrity does not itself add damage.** Once the entire Integrity-changing effect finishes resolving, compare the Process's accumulated damage with its **resulting effective maximum Integrity**. If accumulated damage is **greater than or equal to** the resulting maximum, destroy the Process. Do not destroy it midway through a multi-step effect before its final state is established. Example: maximum Integrity falls from 5 to 2 while accumulated damage is 2 → the Process dies after the effect resolves.
 - **Distinct from proportional scaling:** 'same ratio' here is implemented as the owner's explicit **one-for-one reduction of accumulated damage on positive maximum-Integrity bonuses**, not as preserving an exact mathematical health percentage. This is the canonical numeric rule.
 - If an ongoing maximum-Integrity bonus is later removed, the maximum falls accordingly, but **do not restore damage previously removed when the bonus was gained**; check for death only against the resulting maximum after the removal effect. Explicit card effects may override this default.
+
+
+## 14. Station-focused bulk review — LOCKED (v3.32, 2026-11-07)
+
+The owner **approved 48 of 52** station-specific proposals; **SE02, SE03, SE06, SP03 remain OPEN** and are not implicitly approved. These defaults supplement earlier LOCKED rules. Balance values expressly called configurable (e.g. core Integrity 30) remain adjustable without silently changing core mechanics. Where this section resolves an earlier OPEN topic, it is authoritative. **SE01 is locked as a formula, but SE02 and SE03 remain open timing questions; do not infer their answers from SE01, SE04, SE08 or the existing generic round-income rules.** Likewise SP03 is a station-specific unresolved deployment/activation question despite ordinary Process activation rules.
+
+### Station economy and resources
+
+- **SE01:** Station income is `max(2, min(5, ceil(Open locations / 15)))`, with a 2-resource minimum and a 5-resource income cap; banked storage remains uncapped.
+- **SE04:** At standard round-start preparation, players follow established initiative and the station prepares last (without determining the unresolved placement of individual discard, draw, and income steps under SE03).
+- **SE05:** The station may accumulate unlimited banked resources but cannot spend resources it does not have.
+- **SE07:** When several legal purchases compete for a limited budget, station AI evaluates their combined tactical value, not simply their individual printed costs.
+- **SE08:** Changes in income caused by captures and reclamation affect the next round-start calculation, never past income.
+
+### Station spawning and Process activation
+
+- **SP01:** The station starts without deployed Processes and must legally Start its first from hand with resources earned in round 1.
+- **SP02:** The central core's station spawn remains legal despite nearby enemy Processes when the spawn cell is empty and Open.
+- **SP04:** Station AI may choose the order in which its deployed Processes activate; there is no fixed board-cell activation order.
+- **SP05:** After each station Process activation, AI reevaluates tactical state before selecting the next Process.
+- **SP06:** Each station Process receives no more than one ordinary activation in a Station Phase, no matter how many are deployed.
+- **SP07:** When all legal station spawn cells are occupied, skip Start rather than automatically displacing or deleting a Process.
+- **SP08:** With multiple legal spawns, station AI chooses based on defense, nearby threats, and strategic territory.
+
+### Station AI and tactical behavior
+
+- **AI01:** Station AI uses the same authoritative action legality/combat rules as players and gets no secret exceptions.
+- **AI02:** Station Processes evaluate legal Move, Shoot, Ability, and Pass options; illegal actions cannot be chosen.
+- **AI03:** Prefer a guaranteed enemy Process kill to equal-value nonlethal damage unless that would substantially increase danger to the core.
+- **AI04:** Defending the central core generally has higher value than reclaiming distant territory.
+- **AI05:** Prefer reclaiming an economically valuable player location over an otherwise equivalent low-value location.
+- **AI06:** A station Process may hold position to guard the core rather than moving outward.
+- **AI07:** Target evaluation considers remaining Integrity, threat to core, attack range, retaliation, and expected follow-up attacks.
+- **AI08:** Station may play defensive/reactive Commands on player turns when tactically beneficial.
+- **AI09:** Station AI cannot inspect hidden player hand or deck identities/order; it uses public information and previously revealed events only.
+- **AI10:** Station may plan coordinated multi-Process activations and reevaluate after unexpected Commands/events.
+- **AI11:** Configurable AI difficulty changes planning depth/evaluation quality, not printed card stats, costs, resources, or action allowances.
+
+### Escalation
+
+- **ES01:** Existing inclusive 5×5 and 3×3 dotted square escalation zones are unchanged.
+- **ES02:** Reaching a deeper zone may advance multiple previously untriggered tiers simultaneously.
+- **ES03:** Tier 1/2 change station draw-to-hand target to 5/6 at the next normal round-start draw.
+- **ES04:** Tier 3 triggers when a player first successfully damages the central core; station draw-to-hand target becomes 7.
+- **ES05:** Tier 3 uses the first-core-damage event, not a third dotted board boundary.
+- **ES06:** Escalation never decreases from retreat, healing, loss of territory, or Process destruction.
+- **ES07:** Escalation never gives an immediate free draw, Process deployment, or resources.
+- **ES08:** Forced entry by a player Process into an escalation zone also triggers it.
+- **ES09:** Escalation announcements publicly reveal the current tier and its station draw target.
+
+### Central core and combat
+
+- **SC01:** The central core is an immobile objective tied to the central Injection Point, not a normal station Process card in the station's deck.
+- **SC02:** Starting core maximum Integrity defaults to 30 for the first prototype and is configurable.
+- **SC03:** The core takes persistent damage and dies when accumulated damage reaches its effective maximum Integrity.
+- **SC04:** The core has no default Attack, movement, or automatic retaliation; defense comes from station Processes, Modules, Commands, or explicit core abilities.
+- **SC05:** Attack the core through legal attacks targeting its center location, using effective Range and current board graph.
+- **SC06:** A station Process occupying the center does not inherently make the core untargetable or invulnerable.
+- **SC07:** Core and station Process at the center are distinct selectable targets; attacks only affect the chosen one absent area text.
+- **SC08:** Only cards expressly capable of targeting the core can heal/repair it; Process-only healing cannot.
+- **SC09:** When the core dies, finish the present damage event and immediate trigger chain before ending play, consistent with existing E07.
+
+### Core scoring and endgame
+
+- **SV01:** Initial scoring defaults: +1 point per owned location at player-turn end, +1 per actual point of core damage, and +50 to the surviving player with highest cumulative core-damage contribution.
+- **SV02:** Boss contribution counts actual core damage after prevention/mitigation, never overkill.
+- **SV03:** Damage to station Processes does not count toward central-core contribution bonus without explicit card text.
+- **SV04:** All surviving players tied for the highest cumulative core damage receive the full +50 bonus.
+- **SV05:** Players eliminated before core destruction are ineligible for the +50 bonus regardless of earlier contribution.
+- **SV06:** Rank survivors by final accumulated score, with equal ranks on score ties.
+- **SV07:** After the completed core-destruction event, no further player turns or Station Phase occur.
+
+### Excluded cases — OPEN
+
+- **SE02:** Station income snapshot timing: one exact round-start board state versus some other accounting point. **Not approved.**
+- **SE03:** Whether all factions prepare before the first player turn and the exact ordering of discard, draw, and income relative to turns. **Not approved.**
+- **SE06:** Whether station AI may deliberately bank/save resources rather than spending on immediately affordable cards. **Not approved.**
+- **SP03:** Whether a Process Started during a Station Phase may activate later in that same Station Phase, subject to its movement restrictions. **Not approved.**
 
 ---
 
