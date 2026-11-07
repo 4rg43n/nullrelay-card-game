@@ -127,3 +127,16 @@ The owner approved 68 cases in v3.30 and finalized **S04 in v3.31**, so **all 69
 - **Station, escalation and completion:** E01, E02, E03, E04, E05, E06, E07, E08, E09, E10.
 
 **Implementation implications:** Use stable event IDs and stable card IDs, a response-priority loop (including station priority), dynamic effective-stat computation, same-name ability deduplication, target legality rechecks and full cancellation/no-refund handling. Resolve after-action and destruction hooks consistently. All 68 cases are approved defaults even where earlier text listed the question as OPEN; §13 supersedes earlier OPEN flags about those specific topics. Keep unrelated OPEN questions open.
+
+## Station bulk review implementation contract — LOCKED (v3.32)
+
+**48 of the 52 station-specific proposed rules are approved**; see **GAME_DESIGN.md §14** for normative text under IDs. Implement and test all approved IDs. Four cases remain **OPEN (not approved): SE02, SE03, SE06, SP03**. Do not derive these four from other rules or silently choose defaults. Station economy formula (SE01), AI policies, escalation third-tier first-core-damage trigger, separate targetable central core (initial configurable Integrity 30), and scoring/tie rules are approved as specified. The previously approved game-wide rules in §13 remain valid.
+
+- **Station economy and resources:** SE01, SE04, SE05, SE07, SE08.
+- **Station spawning and Process activation:** SP01, SP02, SP04, SP05, SP06, SP07, SP08.
+- **Station AI and tactical behavior:** AI01, AI02, AI03, AI04, AI05, AI06, AI07, AI08, AI09, AI10, AI11.
+- **Escalation:** ES01, ES02, ES03, ES04, ES05, ES06, ES07, ES08, ES09.
+- **Central core and combat:** SC01, SC02, SC03, SC04, SC05, SC06, SC07, SC08, SC09.
+- **Core scoring and endgame:** SV01, SV02, SV03, SV04, SV05, SV06, SV07.
+
+**Open station cases to resolve with owner:** SE02 (Station income snapshot timing: one exact round-start board state versus some other accounting point.); SE03 (Whether all factions prepare before the first player turn and the exact ordering of discard, draw, and income relative to turns.); SE06 (Whether station AI may deliberately bank/save resources rather than spending on immediately affordable cards.); SP03 (Whether a Process Started during a Station Phase may activate later in that same Station Phase, subject to its movement restrictions.). Add tests for those only after approval.
