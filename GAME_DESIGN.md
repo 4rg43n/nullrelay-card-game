@@ -150,13 +150,13 @@ Damage is **persistent between rounds**, represented by counters against Integri
 3. Reveal Operators; draw 4 per player; set board-specific starting resources.
 4. Begin round 1.
 
-### Start of every round
-For each surviving player in turn order:
-1. Optionally discard any number of cards in hand to Discard.
-2. Draw until hand contains 4 (if already ≥4, draw none).
-3. Gain income from owned locations, capped at 5 for the round.
+### Preparation immediately before each faction acts — LOCKED v3.33
+In fixed initiative order, each surviving player performs this preparation **just before their own turn**, not at a shared round-start step. The station performs the same preparation **just before its Station Phase**:
+1. Optionally discard any number of hand cards to Discard.
+2. Draw until the hand reaches its current draw-to target (players: 4; station: escalated 4/5/6/7). If already at or above target, draw none.
+3. Expire any unspent ordinary resources from the previous turn/phase, then allocate fresh income using **the current board state** (players: owned cells capped at 5; station: locked Open-cell formula). On a player's first turn add their one-time starting allocation of 2; the station has no starting allocation.
 
-After the round-start procedure, players act in the fixed order.
+The faction then executes its normal ordered actions. Remaining resources may still pay reactive Commands until its **next** preparation, when they expire. Captures and reclamation before a faction prepares can change that faction's income in the same round.
 
 ### Player's turn — fixed action sequence
 
@@ -180,7 +180,7 @@ After the actions: capture the locations occupied by the active player's Process
 3. **Mod one location** — optional, at most one legal, paid Module on **any Open location** (LOCKED v3.11), whether or not a station Process occupies it. As for players, this uses the single Mod slot for the phase, costs resources, replaces an existing Module if present, and must obey card-specific restrictions. The location must be Open at the time the Module is installed.
 4. **Activate deployed Processes** — each deployed hostile Process may take **one legal activation**, rather than selecting a single Process as a player does. No Process activates more than once in this phase by default.
 
-Actions 1–3 are limited to once per Station Phase, not once *per hostile Process*. Their ordering is fixed, and the station cannot skip forward then return to an earlier slot. Commands remain instant/reactive under normal Command rules, not additional Start/Update/Mod actions. Exact ordering among multiple hostile Process activations remains open.
+Actions 1–3 are limited to once per Station Phase, not once *per hostile Process*. Their ordering is fixed, and the station cannot skip forward then return to an earlier slot. Commands remain instant/reactive under normal Command rules, not additional Start/Update/Mod actions. **SP04/§14:** station AI chooses the activation order, reevaluating after each activation. Newly Started station Processes are eligible to activate under standard Slow/Normal/Fast deployment-round rules (SP03).
 
 ### Station escalation — LOCKED zones and expanding station hand (v3.4)
 
@@ -385,7 +385,7 @@ The owner approved **68 rules together in v3.30** and finalized the remaining **
 ### Station, escalation and completion
 
 - **E01 — Check escalation immediately when a player Process enters a qualifying cell, including forced movement.**
-- **E02 — Escalation changes the station's subsequent round-start draw target, not its present hand immediately.**
+- **E02 (timing updated v3.33) — Escalation changes the station's draw-to target at its next **pre-Station-Phase preparation**, not its present hand immediately.**
 - **E03 — The station chooses activation order for deployed station Processes; each activates at most once per Station Phase.**
 - **E04 — Station uses standard card legality and costs except where its cards explicitly override.**
 - **E05 — When unable to pay for legal actions, station can pass instead of gaining free substitute actions.**
@@ -443,7 +443,7 @@ The owner approved **48 of 52** station-specific proposals in v3.32 and resolved
 
 - **ES01:** Existing inclusive 5×5 and 3×3 dotted square escalation zones are unchanged.
 - **ES02:** Reaching a deeper zone may advance multiple previously untriggered tiers simultaneously.
-- **ES03:** Tier 1/2 change station draw-to-hand target to 5/6 at the next normal round-start draw.
+- **ES03 (timing updated v3.33):** Tier 1/2 change station draw-to-hand target to 5/6 at its next **pre-Station-Phase draw**.
 - **ES04:** Tier 3 triggers when a player first successfully damages the central core; station draw-to-hand target becomes 7.
 - **ES05:** Tier 3 uses the first-core-damage event, not a third dotted board boundary.
 - **ES06:** Escalation never decreases from retreat, healing, loss of territory, or Process destruction.
