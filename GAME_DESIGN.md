@@ -1,6 +1,6 @@
 # NullRelay — Game Design
 
-> **Design baseline:** v3.32 · 2026-11-05  
+> **Design baseline:** v3.33 · 2026-11-05  
 > **Status:** Pre-implementation design. Sections marked **LOCKED** reflect decisions made in the design conversation. **PROVISIONAL** values may be balanced. **OPEN** questions must not be silently decided by an implementation agent.
 
 ## 1. Concept and design goals
@@ -54,22 +54,22 @@ The central hostile Injection Point **cannot be captured by ordinary location co
 
 ## 4. Resources — LOCKED player economy; station economy v3.6
 
-- At the **start of each round**, every surviving player gains **1 resource per location owned**, capped at **5 resources of income per round** (configurable).
-- Income is evaluated **once** at round start. A location captured during the round does not produce income until the following round. A subsequent loss does not retroactively subtract income.
-- **Unspent resources carry over indefinitely; there is no storage cap.** The value 5 limits *income per round*, not holdings or card costs.
-- Starting bank is set by board. Standard default **2**, so with a starting Injection Point providing 1 income, a standard player has **3 resources available during round 1**.
+- **Immediately before each player's turn**, calculate income as **1 resource per currently owned location**, capped at **5 income per preparation** (configurable). Use the board at that exact moment, after all preceding factions' actions have resolved.
+- Income is evaluated **once per faction's own preparation**, not simultaneously at round start. Control gained or lost before that faction's preparation affects its income immediately. After income is set for that turn, later captures/losses do not retroactively alter its current allocation.
+- **No ordinary resource banking across turns (LOCKED v3.33):** at the faction's next preparation, discard/expire any remaining ordinary resources, then replace its available resource pool with the newly computed income (plus any explicitly applicable first-turn setup allocation or card effects). There is no carryover or hoarding into another turn. Unspent resources **remain spendable on reactive Commands and triggered/optional effects during opponents' turns** until replaced at the faction's next preparation, so off-turn interaction remains possible. A card/Module may explicitly define special resource storage, distinct from this ordinary pool. Expiry/replacement is a resource reset, not a spending requirement.
+- **First-turn setup allocation:** the standard player starts with **2 setup resources** in addition to the **1 income** from their initial Injection Point, for **3 resources on their first turn**. The setup allocation is one-time only; any unused portion is not carried into the next preparation. Thereafter the pool is replaced by that turn's income, subject to explicit card effects.
 - All non-Operator card types have a resource cost. Operator cards themselves cost 0; activated abilities may have resource costs.
 
 ### Station economy and reclamation — LOCKED mechanic, PROVISIONAL formula (v3.6)
 
 - **Every Open location supports the station economically**, without being represented as an ordinary player-owned color or scoring as player territory. The station uses its own resource bank and pays for cards in the usual way.
 - **Station reclamation:** at the **end of each Station Phase**, each location occupied by a surviving station Process changes to **Open** if previously player-controlled. Remove any installed Module on a location whose control changes, sending it to its owner's Discard. This is analogous to end-turn player captures but makes a location Open rather than player-owned. Empty player-controlled locations are not automatically reclaimed.
-- **LOCKED (v3.7): Station starts with 0 banked resources at setup**, then collects its normal station income during the **first round's income step** before its first Station Phase. Do not treat 0 starting resources as 0 income, or give it a separate opening bonus.
-- **Station income has a guaranteed minimum of 2 resources per round**, preventing complete economic starvation even if players control almost the whole map. Income is computed at the normal round-start income step from the number of Open locations; the exact scaling is for balancing.
-- **PROVISIONAL starting formula:** station income = **max(2, min(5, ceil(Open location count / 15)))**. This has a floor of 2, a cap of 5 income per round, and no cap on the station's accumulated bank. It is an initial balancing suggestion, **not a locked formula**. Under the provisional formula, player territory gains reduce station income, while eliminating a player or station reclamation may increase future station income.
+- **LOCKED (v3.7, timing updated v3.33):** Station begins with **0 setup resources**, then receives normal station income **immediately before its first Station Phase**, without a bonus grant. Like player resources, its unspent ordinary pool expires when its next Station Phase preparation replaces it.
+- **Station income has a guaranteed minimum of 2 resources per Station Phase preparation**, preventing complete economic starvation. Compute it **immediately before the Station Phase**, after all player turns and their end-turn captures; the Open-location count therefore reflects this round's changes. The formula is locked in SE01 (§14).
+- **LOCKED (SE01):** Station income = **max(2, min(5, ceil(Open location count / 15)))**, based on current Open cells immediately before the Station Phase. This has a floor of 2 and a cap of 5 **per preparation**, with no ordinary carryover to the next station turn. Player captures before the station acts can lower its resources that same round. Station reclamation after preparation affects a later preparation.
 - The station's own Injection Point counts as Open for economic purposes unless a future specific board rule says otherwise; player-held Injection Points count for their players. This avoids silently treating the center as a separate fifth ownership type.
 
-**OPEN:** whether the provisional station-income formula and its income cap should become permanent, and precise timing of its round-start discard/draw/income relative to players. The two-resource minimum is locked; exact gains beyond that are not.
+**LOCKED (v3.33):** Each player and station performs **their own** pre-turn/phase preparation immediately before acting: optional hand discard, draw to applicable hand-size target, then reset ordinary resources and allocate income based on the **current** board. The station prepares after all player turns. No earlier universal round-start hand/income preparation remains. Ordinary resource storage between preparations is forbidden; a specifically printed storage Module/effect may create an exception.
 
 **Design guidance, not a legality restriction:** Process/Update/Module cost 1–2 = basic, 3–4 = moderate, 5+ = powerful. Command costs need not conform to these tiers.
 
@@ -134,7 +134,7 @@ Damage is **persistent between rounds**, represented by counters against Integri
 
 - Deck: **30 cards**, maximum **3 copies of the same card**. One Operator is outside the deck.
 - Starting hand: **4**.
-- At the start of each round, each surviving player may **discard any number** of cards in hand, **including Processes**, then draws **up to** 4. A hand already at or above 4 draws nothing; **there is no maximum hand size**.
+- **Immediately before their own turn**, each surviving player may **discard any number** of cards in hand, **including Processes**, then draws **up to** 4. A hand already at or above 4 draws nothing; **there is no maximum hand size**. The station follows this procedure immediately before its Station Phase with its current escalated target.
 - When the draw deck empties, shuffle **Discard** to make a new draw deck. The **Graveyard** does not automatically recycle.
 - **Discard:** voluntarily discarded hand cards, used Commands, removed/replaced Updates and Modules, and other discarded non-Process attachments.
 - **Graveyard:** Processes destroyed while deployed on the board. A Process discarded from hand goes to **Discard**, not Graveyard.
@@ -190,7 +190,7 @@ Actions 1–3 are limited to once per Station Phase, not once *per hostile Proce
 
 **LOCKED (v3.4):** Escalation increases the station's **draw-to hand-size target**, not its automatically deployed Process count. The station begins at **4**, increases to **5** at the first board threshold, **6** at the second, and has an intended later target of **7** at a **not-yet-defined third escalation trigger**. With the currently approved two dotted zones, the standard board supports 4 → 5 → 6; **do not invent a third dotted boundary** for 7.
 
-At its regular round-start draw step, the station draws **up to its current target**; existing cards remain in hand, and hand size has no hard maximum. An escalation increases future draw capacity, **not an immediate draw or an automatic Process deployment**. The former suggested fixed hostile force-size tiers **3 → 5 → 6+** are **superseded as station spawning/force requirements**; actual deployment depends on legal cards, resources, locations and station decisions.
+At its regular **pre-Station-Phase** draw step, the station draws **up to its current target**; existing cards remain in hand, and hand size has no hard maximum. An escalation increases future draw capacity, **not an immediate draw or an automatic Process deployment**. The former suggested fixed hostile force-size tiers **3 → 5 → 6+** are **superseded as station spawning/force requirements**; actual deployment depends on legal cards, resources, locations and station decisions.
 
 **Escalation is irreversible.** Once a tier is triggered, the station never decreases its escalation level because players retreat, change position or are eliminated. Store the highest escalation tier reached in game state; do not derive the current tier solely from current Process positions.
 
@@ -204,7 +204,7 @@ At its regular round-start draw step, the station draws **up to its current targ
 
 Thus the boundaries are **2** and **3** squares inward from the closest outer board edge, respectively. The approved 5×5 / 3×3 diagram is authoritative for zone geometry; **a boundary cell counts as inside**. Escalation is global and monotonic: entering the inner zone implies both thresholds have been attained; retreat, death or changes in ownership never lower an attained tier. For nonstandard boards, use explicitly configured equivalent escalation regions rather than hardcoding 9×9 coordinates.
 
-**OPEN:** location/timing of a third escalation to hand-size **7**; station round-start discard/draw/income timing relative to the player round-start procedure; detailed card-driven deployment and AI behavior; when in the movement/Command resolution sequence to evaluate zone entry; and the detailed sequencing of the individual hostile Process activations.
+**LOCKED (§14):** Third escalation to draw target **7** triggers at the first successful player damage to the central core; no third dotted boundary. Individual preparation occurs just before each faction's turn or phase (v3.33). Detailed card-driven AI strategies are partly defined in §14; further balance and planning sophistication may still evolve.
 
 **Important:** 'play Updates/Modules during your own turn' does **not** imply unlimited plays or free timing in violation of the ordered actions. Their owner-turn permission and their once-per-turn fixed action slots both apply. Commands can be played between those steps and as responses without altering the fixed order.
 
@@ -281,7 +281,7 @@ Shooting is the Process's one activation action and does not move it. Attack equ
 ## 11. Design decisions still open
 
 Do **not** convert these to rules without explicit design agreement:
-1. Station behavior: health, Process AI, card/resource-driven deployment, third hand-size-7 escalation trigger, exact round-start timing, order and sequencing of station Process activations, escalation trigger timing, attack logic, damage effects and precise destruction sequence; final income scaling beyond its locked 2-resource floor.
+1. Station behavior: refine card catalog and AI evaluation, balance central core's configurable starting Integrity and the now-locked station income formula, and implement the agreed station Process activation order/behavior. Tier-3 escalation (first core damage) and per-faction pre-action income/preparation are LOCKED.
 2. Boss contribution and scoring tie-breaks; interaction with eliminated contributors and overkill.
 3. Exact multiplayer priority/Command stack response windows, remaining same-location/off-board trigger ties, incomparable same-name effect text, and trigger/Command timing interactions.
 4. Line of sight and range on boards with removed/added connections.
@@ -293,7 +293,7 @@ Do **not** convert these to rules without explicit design agreement:
 ## 12. Guiding examples / tests
 
 - A newly deployed **Fast** Process can be chosen in the fourth action and Move one step; a newly deployed **Normal** or **Slow** Process cannot Move, but either can Shoot/use an activated ability if legal.
-- A player holding 9 resources gains only up to 5 more at the start of a round; resources are **not capped at 5**.
+- A player does **not** carry 9 ordinary resources into their next turn. At their next preparation, previous unspent ordinary resources expire and are replaced by income from their currently controlled locations (up to 5). A special storage card may explicitly override this.
 - A Process moves onto neutral space but is destroyed before end-turn capture: the location **does not change owner**.
 - A Slow Process attacks via attempted entry, fails to displace defender, and remains; its attempted Move still triggers next-round movement cooldown.
 - A Process discarded from hand enters Discard, while a deployed Process destroyed in combat enters Graveyard.
@@ -374,7 +374,7 @@ The owner approved **68 rules together in v3.30** and finalized the remaining **
 - **T01 — Optional action slots may be skipped, but earlier slots cannot be revisited after progressing.**
 - **T02 — A faction without legal actions can end its turn; normal end-of-turn triggers/scoring still happen.**
 - **T03 — Pay costs fully before declaring legal actions; resource totals cannot become negative.**
-- **T04 — Round-start income uses the board state at the beginning of the round and is never recalculated retroactively.**
+- **T04 — Superseded by v3.33:** income uses the board snapshot immediately before **each faction's own turn/Station Phase**, not at universal round start. Once that preparation sets the faction's resources, later changes do not retroactively change that preparation.
 - **T05 — A player eliminated before their turn skips that turn and gains no additional income.**
 - **T06 — Apply ownership changes before recalculating Module legality and continuous effects.**
 - **T07 — A location cannot have two owners; the most recent legal capture controls it.**
@@ -405,15 +405,15 @@ The owner approved **68 rules together in v3.30** and finalized the remaining **
 
 ## 14. Station-focused bulk review — LOCKED (v3.32, 2026-11-07)
 
-The owner **approved 48 of 52** station-specific proposals; **SE02, SE03, SE06, SP03 remain OPEN** and are not implicitly approved. These defaults supplement earlier LOCKED rules. Balance values expressly called configurable (e.g. core Integrity 30) remain adjustable without silently changing core mechanics. Where this section resolves an earlier OPEN topic, it is authoritative. **SE01 is locked as a formula, but SE02 and SE03 remain open timing questions; do not infer their answers from SE01, SE04, SE08 or the existing generic round-income rules.** Likewise SP03 is a station-specific unresolved deployment/activation question despite ordinary Process activation rules.
+The owner approved **48 of 52** station-specific proposals in v3.32 and resolved the four flagged items in **v3.33**. All 52 station cases now have a recorded decision (some originally approved defaults are superseded where the v3.33 no-hoarding economy requires it). These defaults supplement earlier LOCKED rules. Balance values expressly called configurable (e.g. core Integrity 30) remain adjustable without silently changing core mechanics. Where this section resolves an earlier OPEN topic, it is authoritative. **SE01** remains the locked formula; SE02/SE03 now establish each faction's own just-before-action preparation and current-board income. **SE06** rejects ordinary resource carryover for **all** factions. **SP03** applies the existing Slow/Normal/Fast deployment-round action rules to station Processes.
 
 ### Station economy and resources
 
-- **SE01:** Station income is `max(2, min(5, ceil(Open locations / 15)))`, with a 2-resource minimum and a 5-resource income cap; banked storage remains uncapped.
-- **SE04:** At standard round-start preparation, players follow established initiative and the station prepares last (without determining the unresolved placement of individual discard, draw, and income steps under SE03).
-- **SE05:** The station may accumulate unlimited banked resources but cannot spend resources it does not have.
+- **SE01:** Station income is `max(2, min(5, ceil(Open locations / 15)))`, with a 2-resource minimum and a 5-resource income cap per preparation. Ordinary resource banking is superseded by SE06/v3.33.
+- **SE04:** Factions prepare in their established acting order: each player immediately before their turn, and station immediately before Station Phase. SE03/v3.33 defines their preparation steps.
+- **SE05 (partly superseded by SE06/v3.33):** Station cannot spend resources it does not have; it **cannot accumulate unspent ordinary resources between phases**. Only explicitly printed storage effects can retain resources.
 - **SE07:** When several legal purchases compete for a limited budget, station AI evaluates their combined tactical value, not simply their individual printed costs.
-- **SE08:** Changes in income caused by captures and reclamation affect the next round-start calculation, never past income.
+- **SE08 (timing updated v3.33):** Ownership changes affect the **next preparation of the affected faction**, potentially later in the same round; never retroactively change resources already allocated in a completed preparation.
 
 ### Station spawning and Process activation
 
@@ -473,12 +473,12 @@ The owner **approved 48 of 52** station-specific proposals; **SE02, SE03, SE06, 
 - **SV06:** Rank survivors by final accumulated score, with equal ranks on score ties.
 - **SV07:** After the completed core-destruction event, no further player turns or Station Phase occur.
 
-### Excluded cases — OPEN
+### Formerly flagged cases — LOCKED (v3.33)
 
-- **SE02:** Station income snapshot timing: one exact round-start board state versus some other accounting point. **Not approved.**
-- **SE03:** Whether all factions prepare before the first player turn and the exact ordering of discard, draw, and income relative to turns. **Not approved.**
-- **SE06:** Whether station AI may deliberately bank/save resources rather than spending on immediately affordable cards. **Not approved.**
-- **SP03:** Whether a Process Started during a Station Phase may activate later in that same Station Phase, subject to its movement restrictions. **Not approved.**
+- **SE02:** Station income reads the board **immediately before Station Phase**, not at universal round start. Each player likewise computes income immediately before their own turn; territorial disruption before preparation matters immediately.
+- **SE03:** Each faction performs its own preparation **immediately before acting**: optionally discard hand cards, draw up to its target, then replace ordinary resources with income from the current board (plus first-turn setup allocation where applicable). Players follow initiative and station prepares after player turns.
+- **SE06:** **No faction, including the station, may hoard ordinary resources between turns/phases.** Unspent ordinary resources remain available for off-turn Commands until the faction's next preparation, when they expire and are replaced. Future Modules or explicit card effects may introduce special location-based storage. The station may pass/decline buys, but cannot bank the remainder for a future Station Phase.
+- **SP03:** A station Process Started in the current Station Phase **may use one ordinary activation during that same phase**, exactly like a newly deployed player Process: **Fast** may Move (one edge); **Normal** and **Slow** may not Move that deployment round; all three may Shoot, use an eligible activated Ability, or Pass. Slow's later-round movement cooldown applies normally. This is not bonus activation or automatic free movement.
 
 ---
 
